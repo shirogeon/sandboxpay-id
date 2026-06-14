@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SandboxPay ID</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-family: Arial, sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .navbar {
+        min-height: 72px;
+        padding: 0 28px;
+        background: rgba(2, 6, 23, 0.95);
+        border-bottom: 1px solid #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+
+      .brand {
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .nav-links button,
+      .nav-links a {
+        background: transparent;
+        color: #cbd5e1;
+        border: 1px solid #334155;
+        padding: 9px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .nav-links button:hover,
+      .nav-links a:hover {
+        background: #111827;
+      }
+
+      .container {
+        max-width: 1120px;
+        margin: auto;
+        padding: 42px 22px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        color: #93c5fd;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      h1 {
+        font-size: clamp(36px, 6vw, 62px);
+        line-height: 1.05;
+        margin: 10px 0 18px;
+      }
+
+      h2 {
+        margin-top: 0;
+      }
+
+      p {
+        color: #94a3b8;
+        line-height: 1.7;
+      }
+
+      .card,
+      .panel {
+        background: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 18px;
+        padding: 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-top: 34px;
+      }
+
+      label {
+        display: block;
+        color: #cbd5e1;
+        font-size: 14px;
+        margin-top: 14px;
+        margin-bottom: 7px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 11px;
+        border: 1px solid #334155;
+        background: #020617;
+        color: #e5e7eb;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: #2563eb;
+      }
+
+      .button {
+        border: none;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .primary {
+        background: #2563eb;
+        color: white;
+      }
+
+      .primary:hover {
+        background: #1d4ed8;
+      }
+
+      .secondary {
+        background: #334155;
+        color: white;
+      }
+
+      .secondary:hover {
+        background: #475569;
+      }
+
+      .danger {
+        background: #dc2626;
+        color: white;
+      }
+
+      .danger:hover {
+        background: #b91c1c;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+
+      .full {
+        width: 100%;
+        margin-top: 16px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .message {
+        margin-top: 14px;
+        background: #020617;
+        border: 1px solid #1f2937;
+        color: #cbd5e1;
+        border-radius: 12px;
+        padding: 12px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .secret-box {
+        margin-top: 16px;
+        background: #020617;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .secret-box span {
+        display: block;
+        color: #94a3b8;
+        margin-bottom: 8px;
+      }
+
+      .secret-box code {
+        color: #93c5fd;
+        word-break: break-all;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #1f2937;
+        padding: 13px;
+        text-align: left;
+      }
+
+      th {
+        color: #cbd5e1;
+        background: #020617;
+      }
+
+      td {
+        color: #e5e7eb;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .success {
+        background: rgba(22, 163, 74, 0.18);
+        color: #86efac;
+      }
+
+      .inactive {
+        background: rgba(220, 38, 38, 0.18);
+        color: #fca5a5;
+      }
+
+      pre {
+        background: #020617;
+        border: 1px solid #1f2937;
+        border-radius: 14px;
+        padding: 16px;
+        overflow-x: auto;
+        color: #d1d5db;
+      }
+
+      @media (max-width: 850px) {
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .features {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 560px) {
+        .navbar {
+          padding: 16px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .button,
+        .actions a,
+        .actions button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="brand">SandboxPay ID</div>
+
+      <div class="nav-links">
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('login')">Login</button>
+        <button onclick="showPage('register')">Register</button>
+        <button onclick="showPage('dashboard')">Dashboard</button>
+        <a href="http://localhost:5000/docs" target="_blank">Docs</a>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section id="homePage">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Mock Payment Gateway Sandbox</p>
+            <h1>Belajar integrasi payment gateway tanpa uang asli.</h1>
+            <p>
+              SandboxPay ID adalah mock API untuk developer yang ingin belajar
+              membuat transaksi, payment URL, status pembayaran, API key, dan
+              webhook callback.
+            </p>
+
+            <div class="actions">
+              <button class="button primary" onclick="showPage('register')">
+                Mulai Sekarang
+              </button>
+              <a class="button secondary" href="http://localhost:5000/docs" target="_blank">
+                Buka Dokumentasi
+              </a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="badge success">payment.success</div>
+            <h2>Webhook Payload</h2>
+            <pre>{
+  "event": "payment.success",
+  "transaction_id": "trx_xxxxx",
+  "order_id": "ORDER-001",
+  "amount": 50000,
+  "status": "SUCCESS"
+}</pre>
+          </div>
+        </div>
+
+        <div class="features">
+          <div class="card">
+            <h2>API Key</h2>
+            <p>Generate secret key untuk mengakses endpoint transaksi.</p>
+          </div>
+
+          <div class="card">
+            <h2>Transaction API</h2>
+            <p>Buat transaksi dan dapatkan payment URL otomatis.</p>
+          </div>
+
+          <div class="card">
+            <h2>Simulator</h2>
+            <p>Simulasikan pembayaran success, failed, pending, dan expired.</p>
+          </div>
+
+          <div class="card">
+            <h2>Webhook</h2>
+            <p>Lihat log callback dan retry webhook dari database.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="registerPage" class="hidden">
+        <div class="grid">
+          <div class="panel">
+            <h2>Register Developer</h2>
+            <p>Buat akun developer untuk mendapatkan API key sandbox.</p>
+
+            <label>Nama</label>
+            <input id="registerName" value="Shiroge Developer" />
+
+            <label>Email</label>
+            <input id="registerEmail" value="shiroge@example.com" />
+
+            <label>Password</label>
+            <input id="registerPassword" type="password" value="password123" />
+
+            <button class="button primary full" onclick="registerUser()">Register</button>
+
+            <div id="registerMessage" class="message hidden"></div>
+          </div>
+
+          <div class="panel">
+            <h2>Catatan</h2>
+            <p>
+              Kalau email sudah pernah dipakai, langsung login saja. Data akun
+              tersimpan di database backend.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="loginPage" class="hidden">
+        <div class="grid">
+          <div class="panel">
+            <h2>Login Developer</h2>
+            <p>Masuk untuk mengelola API key dan transaksi sandbox.</p>
+
+            <label>Email</label>
+            <input id="loginEmail" value="shiroge@example.com" />
+
+            <label>Password</label>
+            <input id="loginPassword" type="password" value="password123" />
+
+            <button class="button primary full" onclick="loginUser()">Login</button>
+
+            <div id="loginMessage" class="message hidden"></div>
+          </div>
+
+          <div class="panel">
+            <h2>Status Token</h2>
+            <p>Token login akan disimpan di browser localStorage.</p>
+            <div id="tokenBox" class="message">Token belum ada.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboardPage" class="hidden">
+        <div class="panel">
+          <p class="eyebrow">Developer Dashboard</p>
+          <h1 id="dashboardTitle">Dashboard</h1>
+          <p>
+            Kelola API key sandbox kamu. Untuk testing transaksi dan webhook,
+            gunakan tools backend yang sudah kita buat.
+          </p>
+
+          <div class="actions">
+            <button class="button primary" onclick="loadProfile()">Refresh Profile</button>
+            <button class="button secondary" onclick="loadApiKeys()">Refresh API Key</button>
+            <button class="button primary" onclick="generateApiKey()">Generate API Key</button>
+            <button class="button danger" onclick="resetApiKey()">Reset API Key</button>
+            <a class="button secondary" href="http://localhost:5000/transaction-tester" target="_blank">
+              Transaction Tester
+            </a>
+            <a class="button secondary" href="http://localhost:5000/webhook-log-tester" target="_blank">
+              Webhook Logs
+            </a>
+          </div>
+
+          <div id="dashboardMessage" class="message hidden"></div>
+
+          <div id="secretBox" class="secret-box hidden">
+            <span>Secret API Key</span>
+            <code id="secretKeyText"></code>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h2>Profile</h2>
+            <div id="profileOutput" class="message">Belum mengambil profile.</div>
+          </div>
+
+          <div class="panel">
+            <h2>API Key List</h2>
+            <div id="apiKeyOutput" class="message">Belum mengambil API key.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5000";
+
+      function getToken() {
+        return localStorage.getItem("sandboxpay_token") || "";
+      }
+
+      function setToken(token) {
+        localStorage.setItem("sandboxpay_token", token);
+        updateTokenBox();
+      }
+
+      function removeToken() {
+        localStorage.removeItem("sandboxpay_token");
+        updateTokenBox();
+      }
+
+      function updateTokenBox() {
+        const tokenBox = document.getElementById("tokenBox");
+        if (!tokenBox) return;
+
+        const token = getToken();
+        tokenBox.textContent = token ? token : "Token belum ada.";
+      }
+
+      function showMessage(id, data) {
+        const el = document.getElementById(id);
+        el.classList.remove("hidden");
+
+        if (typeof data === "string") {
+          el.textContent = data;
+        } else {
+          el.textContent = JSON.stringify(data, null, 2);
+        }
+      }
+
+      function showPage(page) {
+        const pages = ["home", "register", "login", "dashboard"];
+
+        pages.forEach((item) => {
+          document.getElementById(item + "Page").classList.add("hidden");
+        });
+
+        document.getElementById(page + "Page").classList.remove("hidden");
+
+        if (page === "dashboard") {
+          loadProfile();
+          loadApiKeys();
+        }
+
+        updateTokenBox();
+      }
+
+      async function apiRequest(path, options = {}) {
+        const headers = {
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        };
+
+        const token = getToken();
+
+        if (token) {
+          headers.Authorization = "Bearer " + token;
+        }
+
+        const response = await fetch(API_BASE_URL + path, {
+          ...options,
+          headers,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw data;
+        }
+
+        return data;
+      }
+
+      async function registerUser() {
+        try {
+          showMessage("registerMessage", "Memproses register...");
+
+          const body = {
+            name: document.getElementById("registerName").value,
+            email: document.getElementById("registerEmail").value,
+            password: document.getElementById("registerPassword").value,
+          };
+
+          const data = await apiRequest("/api/auth/register", {
+            method: "POST",
+            body: JSON.stringify(body),
+          });
+
+          setToken(data.data.token);
+          showMessage("registerMessage", data);
+          showPage("dashboard");
+        } catch (error) {
+          showMessage("registerMessage", error);
+        }
+      }
+
+      async function loginUser() {
+        try {
+          showMessage("loginMessage", "Memproses login...");
+
+          const body = {
+            email: document.getElementById("loginEmail").value,
+            password: document.getElementById("loginPassword").value,
+          };
+
+          const data = await apiRequest("/api/auth/login", {
+            method: "POST",
+            body: JSON.stringify(body),
+          });
+
+          setToken(data.data.token);
+          showMessage("loginMessage", data);
+          showPage("dashboard");
+        } catch (error) {
+          showMessage("loginMessage", error);
+        }
+      }
+
+      async function loadProfile() {
+        try {
+          const data = await apiRequest("/api/auth/me");
+
+          document.getElementById("dashboardTitle").textContent =
+            "Selamat datang, " + data.data.user.name;
+
+          showMessage("profileOutput", data.data.user);
+        } catch (error) {
+          showMessage("profileOutput", error);
+        }
+      }
+
+      async function loadApiKeys() {
+        try {
+          const data = await apiRequest("/api/keys");
+          const keys = data.data.apiKeys;
+
+          if (!keys || keys.length === 0) {
+            showMessage("apiKeyOutput", "Belum ada API key.");
+            return;
+          }
+
+          const html = keys
+            .map((key) => {
+              return [
+                "Prefix: " + key.keyPrefix,
+                "Status: " + (key.isActive ? "ACTIVE" : "INACTIVE"),
+                "Last Used: " + (key.lastUsedAt || "-"),
+                "Created At: " + key.createdAt,
+              ].join("\\n");
+            })
+            .join("\\n\\n---\\n\\n");
+
+          showMessage("apiKeyOutput", html);
+        } catch (error) {
+          showMessage("apiKeyOutput", error);
+        }
+      }
+
+      async function generateApiKey() {
+        try {
+          showMessage("dashboardMessage", "Membuat API key...");
+
+          const data = await apiRequest("/api/keys/generate", {
+            method: "POST",
+          });
+
+          document.getElementById("secretBox").classList.remove("hidden");
+          document.getElementById("secretKeyText").textContent =
+            data.data.secretKey;
+
+          showMessage("dashboardMessage", data.message);
+          loadApiKeys();
+        } catch (error) {
+          showMessage("dashboardMessage", error);
+        }
+      }
+
+      async function resetApiKey() {
+        const ok = confirm("Yakin ingin reset API key?");
+        if (!ok) return;
+
+        try {
+          showMessage("dashboardMessage", "Mereset API key...");
+
+          const data = await apiRequest("/api/keys/reset", {
+            method: "POST",
+          });
+
+          document.getElementById("secretBox").classList.remove("hidden");
+          document.getElementById("secretKeyText").textContent =
+            data.data.secretKey;
+
+          showMessage("dashboardMessage", data.message);
+          loadApiKeys();
+        } catch (error) {
+          showMessage("dashboardMessage", error);
+        }
+      }
+
+      function logout() {
+        removeToken();
+        showPage("home");
+      }
+
+      updateTokenBox();
+      showPage("home");
+    </script>
+  </body>
+</html>

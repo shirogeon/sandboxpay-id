@@ -1,0 +1,28 @@
+const TRANSACTION_STATUS = {
+  PENDING: "PENDING",
+  SUCCESS: "SUCCESS",
+  FAILED: "FAILED",
+  EXPIRED: "EXPIRED",
+  CANCELLED: "CANCELLED",
+};
+
+const PAYMENT_METHOD = {
+  MOCK_EWALLET: "MOCK_EWALLET",
+  MOCK_QR: "MOCK_QR",
+  MOCK_VA: "MOCK_VA",
+  MOCK_RETAIL: "MOCK_RETAIL",
+};
+
+const WEBHOOK_EVENT = {
+  PAYMENT_PENDING: "payment.pending",
+  PAYMENT_SUCCESS: "payment.success",
+  PAYMENT_FAILED: "payment.failed",
+  PAYMENT_EXPIRED: "payment.expired",
+  PAYMENT_CANCELLED: "payment.cancelled",
+};
+
+module.exports = {
+  TRANSACTION_STATUS,
+  PAYMENT_METHOD,
+  WEBHOOK_EVENT,
+};

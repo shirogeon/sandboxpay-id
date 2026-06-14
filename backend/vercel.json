@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "buildCommand": "npm install && npx prisma generate",
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/api/index.js"
+      }
+    ]
+  }

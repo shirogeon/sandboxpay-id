@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import {
   API_BASE_URL,
@@ -20,13 +20,25 @@ function formatRupiah(value) {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0,
-  }).format(value || 0);
+  }).format(Number(value || 0));
+}
+
+function copyText(value, callback) {
+  navigator.clipboard.writeText(value);
+  callback?.();
+}
+
+function StatusBadge({ status }) {
+  const cleanStatus = String(status || "-").toLowerCase();
+
+  return <span className={`badge ${cleanStatus}`}>{status || "-"}</span>;
 }
 
 function Navbar({ user, onLogout }) {
   return (
     <nav className="navbar">
       <Link to="/" className="brand">
+        <span className="brandMark">S</span>
         SandboxPay ID
       </Link>
 
@@ -59,65 +71,154 @@ function Navbar({ user, onLogout }) {
 
 function Landing() {
   return (
-    <main className="container">
-      <section className="hero">
-        <div>
-          <p className="eyebrow">Mock Payment Gateway Sandbox</p>
-          <h1>Belajar integrasi payment gateway tanpa uang asli.</h1>
-          <p className="heroText">
-            SandboxPay ID adalah mock API untuk developer yang ingin belajar
-            membuat transaksi, payment URL, simulasi status pembayaran, API key,
-            webhook callback, dan webhook logs.
-          </p>
+    <main>
+      <section className="heroSection">
+        <div className="container hero">
+          <div className="heroContent">
+            <p className="eyebrow">Payment Gateway Sandbox untuk Developer</p>
 
-          <div className="actions">
-            <Link to="/register" className="button primary">
-              Mulai Sekarang
-            </Link>
-            <a
-              href={`${API_BASE_URL}/docs`}
-              target="_blank"
-              rel="noreferrer"
-              className="button secondary"
-            >
-              Buka Dokumentasi
-            </a>
+            <h1>Belajar integrasi pembayaran tanpa KYC dan tanpa uang asli.</h1>
+
+            <p className="heroText">
+              SandboxPay ID membantu developer belajar alur payment gateway:
+              membuat transaksi, membuka payment simulator, menerima webhook,
+              melihat logs, dan mencoba API key seperti integrasi payment
+              gateway sungguhan.
+            </p>
+
+            <div className="actions">
+              <Link to="/register" className="button primary">
+                Mulai Gratis
+              </Link>
+
+              <a
+                href={`${API_BASE_URL}/docs`}
+                target="_blank"
+                rel="noreferrer"
+                className="button secondary"
+              >
+                Lihat Dokumentasi
+              </a>
+            </div>
+
+            <div className="heroNote">
+              Tidak memproses uang asli. Dibuat untuk edukasi, testing, dan
+              portfolio developer.
+            </div>
           </div>
-        </div>
 
-        <div className="codeCard">
-          <div className="badge success">payment.success</div>
-          <h3>Webhook Payload</h3>
-          <pre>{`{
+          <div className="heroPreview">
+            <div className="previewHeader">
+              <span className="dot red"></span>
+              <span className="dot yellow"></span>
+              <span className="dot green"></span>
+              <strong>Webhook Payload</strong>
+            </div>
+
+            <pre>{`{
   "event": "payment.success",
-  "transaction_id": "trx_xxxxx",
+  "transaction_id": "trx_8f2bb845...",
   "order_id": "ORDER-001",
   "amount": 50000,
-  "status": "SUCCESS"
+  "status": "SUCCESS",
+  "payment_method": "MOCK_EWALLET"
 }`}</pre>
+
+            <div className="previewFooter">
+              <StatusBadge status="SUCCESS" />
+              <span>Response 200</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="features">
-        <div className="panel">
-          <h3>API Key</h3>
-          <p>Generate secret key untuk mengakses endpoint transaksi.</p>
+      <section className="container section">
+        <div className="sectionIntro">
+          <p className="eyebrow">Core Features</p>
+          <h2>Fitur yang dibutuhkan untuk belajar integrasi pembayaran.</h2>
         </div>
 
-        <div className="panel">
-          <h3>Transaction API</h3>
-          <p>Buat transaksi sandbox dan dapatkan payment URL otomatis.</p>
+        <div className="featureGrid">
+          <div className="featureCard">
+            <span className="featureNumber">01</span>
+            <h3>Developer Auth</h3>
+            <p>
+              Register, login, dan kelola akun developer menggunakan JWT
+              authentication.
+            </p>
+          </div>
+
+          <div className="featureCard">
+            <span className="featureNumber">02</span>
+            <h3>API Key</h3>
+            <p>
+              Generate secret key untuk mengakses endpoint transaksi sandbox.
+            </p>
+          </div>
+
+          <div className="featureCard">
+            <span className="featureNumber">03</span>
+            <h3>Transaction API</h3>
+            <p>
+              Buat transaksi, dapatkan payment URL, dan cek riwayat transaksi.
+            </p>
+          </div>
+
+          <div className="featureCard">
+            <span className="featureNumber">04</span>
+            <h3>Webhook Logs</h3>
+            <p>
+              Pantau callback webhook, response status, attempt, dan retry
+              delivery.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="container section">
+        <div className="workflow">
+          <div>
+            <p className="eyebrow">How It Works</p>
+            <h2>Alur testing dibuat mirip payment gateway asli.</h2>
+          </div>
+
+          <div className="workflowSteps">
+            <div className="workflowItem">
+              <strong>1. Generate API Key</strong>
+              <span>Developer mendapatkan secret key dari dashboard.</span>
+            </div>
+
+            <div className="workflowItem">
+              <strong>2. Create Transaction</strong>
+              <span>API membuat transaksi dan mengembalikan payment URL.</span>
+            </div>
+
+            <div className="workflowItem">
+              <strong>3. Simulate Payment</strong>
+              <span>User memilih status pembayaran di payment simulator.</span>
+            </div>
+
+            <div className="workflowItem">
+              <strong>4. Receive Webhook</strong>
+              <span>Backend mengirim callback ke URL developer.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container ctaSection">
+        <div>
+          <p className="eyebrow">Ready to Test</p>
+          <h2>Mulai testing integrasi pembayaran sekarang.</h2>
+          <p>
+            Buat akun developer, generate API key, lalu coba create transaction
+            pertama kamu.
+          </p>
         </div>
 
-        <div className="panel">
-          <h3>Payment Simulator</h3>
-          <p>Simulasikan pembayaran sukses, gagal, pending, atau expired.</p>
-        </div>
-
-        <div className="panel">
-          <h3>Webhook Logs</h3>
-          <p>Lihat response webhook, attempt, status, dan retry webhook.</p>
-        </div>
+        <Link to="/register" className="button primary">
+          Buat Akun Developer
+        </Link>
       </section>
     </main>
   );
@@ -127,16 +228,24 @@ function Register({ refreshUser }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    name: "Shiroge Developer",
-    email: "shiroge@example.com",
-    password: "password123",
+    name: "",
+    email: "",
+    password: "",
   });
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function submit(e) {
     e.preventDefault();
-    setMessage("Memproses register...");
+
+    if (!form.name || !form.email || !form.password) {
+      setMessage("Nama, email, dan password wajib diisi.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("Membuat akun developer...");
 
     try {
       const data = await apiRequest("/api/auth/register", {
@@ -150,23 +259,31 @@ function Register({ refreshUser }) {
       navigate("/dashboard");
     } catch (error) {
       setMessage(error.message || "Register gagal.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <main className="authPage">
       <form className="authCard" onSubmit={submit}>
+        <p className="eyebrow">Create Account</p>
         <h1>Register Developer</h1>
-        <p>Buat akun untuk mendapatkan API key sandbox.</p>
+        <p>
+          Buat akun untuk mengelola API key dan mencoba payment gateway sandbox.
+        </p>
 
         <label>Nama</label>
         <input
+          placeholder="Contoh: Andi Developer"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
 
         <label>Email</label>
         <input
+          type="email"
+          placeholder="nama@email.com"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
@@ -174,11 +291,14 @@ function Register({ refreshUser }) {
         <label>Password</label>
         <input
           type="password"
+          placeholder="Minimal 6 karakter"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
 
-        <button className="button primary full">Register</button>
+        <button className="button primary full" disabled={loading}>
+          {loading ? "Memproses..." : "Register"}
+        </button>
 
         {message && <div className="message">{message}</div>}
 
@@ -194,14 +314,22 @@ function Login({ refreshUser }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    email: "shiroge@example.com",
-    password: "password123",
+    email: "",
+    password: "",
   });
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function submit(e) {
     e.preventDefault();
+
+    if (!form.email || !form.password) {
+      setMessage("Email dan password wajib diisi.");
+      return;
+    }
+
+    setLoading(true);
     setMessage("Memproses login...");
 
     try {
@@ -216,17 +344,22 @@ function Login({ refreshUser }) {
       navigate("/dashboard");
     } catch (error) {
       setMessage(error.message || "Login gagal.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <main className="authPage">
       <form className="authCard" onSubmit={submit}>
+        <p className="eyebrow">Welcome Back</p>
         <h1>Login Developer</h1>
-        <p>Masuk untuk mengelola API key dan transaksi sandbox.</p>
+        <p>Masuk untuk melihat API key, transaksi, dan webhook logs kamu.</p>
 
         <label>Email</label>
         <input
+          type="email"
+          placeholder="nama@email.com"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
@@ -234,11 +367,14 @@ function Login({ refreshUser }) {
         <label>Password</label>
         <input
           type="password"
+          placeholder="Masukkan password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
 
-        <button className="button primary full">Login</button>
+        <button className="button primary full" disabled={loading}>
+          {loading ? "Memproses..." : "Login"}
+        </button>
 
         {message && <div className="message">{message}</div>}
 
@@ -254,11 +390,12 @@ function Dashboard({ user, refreshUser }) {
   const [apiKeys, setApiKeys] = useState([]);
   const [secretKey, setSecretKey] = useState(getSecretApiKey());
   const [message, setMessage] = useState("");
+  const [copied, setCopied] = useState("");
 
   async function loadKeys() {
     try {
       const data = await apiRequest("/api/keys");
-      setApiKeys(data.data.apiKeys);
+      setApiKeys(data.data.apiKeys || []);
     } catch (error) {
       setMessage(error.message || "Gagal mengambil API key.");
     }
@@ -304,6 +441,15 @@ function Dashboard({ user, refreshUser }) {
     }
   }
 
+  function handleCopySecret() {
+    if (!secretKey) return;
+
+    copyText(secretKey, () => {
+      setCopied("Secret API key berhasil dicopy.");
+      setTimeout(() => setCopied(""), 2200);
+    });
+  }
+
   useEffect(() => {
     refreshUser();
     loadKeys();
@@ -314,24 +460,41 @@ function Dashboard({ user, refreshUser }) {
   }
 
   return (
-    <main className="container">
-      <section className="dashboardHeader">
+    <main className="container pageContainer">
+      <section className="pageHeader">
         <div>
           <p className="eyebrow">Developer Dashboard</p>
-          <h1>Selamat datang, {user?.name || "Developer"}</h1>
+          <h1>Halo, {user?.name || "Developer"}</h1>
           <p>
-            Kelola API key sandbox, cek transaksi, dan pantau webhook dari satu
-            dashboard.
+            Kelola API key, buat transaksi sandbox, dan cek webhook delivery
+            dari satu dashboard.
           </p>
         </div>
 
         <div className="actions">
           <Link to="/transactions" className="button secondary">
-            Transactions
+            Buat Transaksi
           </Link>
-          <Link to="/webhooks" className="button secondary">
-            Webhook Logs
+          <Link to="/webhooks" className="button ghost">
+            Lihat Webhook Logs
           </Link>
+        </div>
+      </section>
+
+      <section className="statsGrid">
+        <div className="statCard">
+          <span>Total API Key</span>
+          <strong>{apiKeys.length}</strong>
+        </div>
+
+        <div className="statCard">
+          <span>Active Key</span>
+          <strong>{apiKeys.filter((item) => item.isActive).length}</strong>
+        </div>
+
+        <div className="statCard">
+          <span>API Base URL</span>
+          <code>{API_BASE_URL}</code>
         </div>
       </section>
 
@@ -356,16 +519,17 @@ function Dashboard({ user, refreshUser }) {
         </div>
 
         <div className="panel">
-          <h2>API Key</h2>
+          <h2>API Key Management</h2>
           <p>
-            Secret API key hanya tampil saat generate atau reset. Simpan baik-baik
-            karena key ini dipakai untuk create transaction.
+            Secret API key hanya tampil saat generate atau reset. Simpan key ini
+            karena dipakai sebagai Bearer Token untuk endpoint transaksi.
           </p>
 
           <div className="actions">
             <button onClick={generateKey} className="button primary">
               Generate API Key
             </button>
+
             <button onClick={resetKey} className="button danger">
               Reset API Key
             </button>
@@ -374,24 +538,38 @@ function Dashboard({ user, refreshUser }) {
           {secretKey && (
             <div className="secretBox">
               <span>Secret API Key</span>
-              <code>{secretKey}</code>
+
+              <div className="copyRow">
+                <code>{secretKey}</code>
+                <button onClick={handleCopySecret} className="button small ghost">
+                  Copy
+                </button>
+              </div>
             </div>
           )}
 
+          {copied && <div className="successMessage">{copied}</div>}
           {message && <div className="message">{message}</div>}
         </div>
       </section>
 
       <section className="panel">
         <div className="sectionHeader">
-          <h2>API Key List</h2>
-          <button onClick={loadKeys} className="button secondary small">
+          <div>
+            <h2>API Key List</h2>
+            <p>Daftar API key yang pernah dibuat untuk akun ini.</p>
+          </div>
+
+          <button onClick={loadKeys} className="button ghost small">
             Refresh
           </button>
         </div>
 
         {apiKeys.length === 0 ? (
-          <p>Belum ada API key.</p>
+          <div className="emptyState">
+            <h3>Belum ada API key</h3>
+            <p>Generate API key pertama kamu untuk mulai membuat transaksi.</p>
+          </div>
         ) : (
           <div className="tableWrap">
             <table>
@@ -407,15 +585,11 @@ function Dashboard({ user, refreshUser }) {
               <tbody>
                 {apiKeys.map((key) => (
                   <tr key={key.id}>
-                    <td>{key.keyPrefix}</td>
                     <td>
-                      <span
-                        className={
-                          key.isActive ? "badge success" : "badge danger"
-                        }
-                      >
-                        {key.isActive ? "ACTIVE" : "INACTIVE"}
-                      </span>
+                      <code>{key.keyPrefix}</code>
+                    </td>
+                    <td>
+                      <StatusBadge status={key.isActive ? "ACTIVE" : "INACTIVE"} />
                     </td>
                     <td>{formatDate(key.lastUsedAt)}</td>
                     <td>{formatDate(key.createdAt)}</td>
@@ -434,17 +608,41 @@ function Transactions() {
   const [apiKey, setApiKey] = useState(getSecretApiKey());
   const [transactions, setTransactions] = useState([]);
   const [message, setMessage] = useState("");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [form, setForm] = useState({
     order_id: `ORDER-${Date.now()}`,
     amount: 50000,
-    customer_name: "Bayhaqi",
-    customer_email: "bayhaqi@example.com",
+    customer_name: "",
+    customer_email: "",
     payment_method: "MOCK_EWALLET",
     callback_url: `${API_BASE_URL}/webhook-test/receive`,
   });
 
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((trx) => {
+      const keyword = search.toLowerCase();
+
+      const matchesSearch =
+        trx.transactionId?.toLowerCase().includes(keyword) ||
+        trx.orderId?.toLowerCase().includes(keyword) ||
+        trx.customerName?.toLowerCase().includes(keyword) ||
+        trx.customerEmail?.toLowerCase().includes(keyword);
+
+      const matchesStatus =
+        statusFilter === "ALL" || trx.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [transactions, search, statusFilter]);
+
   function saveApiKey() {
+    if (!apiKey) {
+      setMessage("Secret API key wajib diisi.");
+      return;
+    }
+
     setSecretApiKey(apiKey);
     setMessage("Secret API key berhasil disimpan di browser.");
   }
@@ -472,6 +670,17 @@ function Transactions() {
 
   async function createTransaction(e) {
     e.preventDefault();
+
+    if (!apiKey) {
+      setMessage("Simpan Secret API Key dulu sebelum membuat transaksi.");
+      return;
+    }
+
+    if (!form.customer_name || !form.customer_email) {
+      setMessage("Customer name dan customer email wajib diisi.");
+      return;
+    }
+
     setMessage("Membuat transaksi...");
 
     try {
@@ -483,7 +692,7 @@ function Transactions() {
         }),
       });
 
-      setMessage(data.message);
+      setMessage(data.message || "Transaksi berhasil dibuat.");
       setForm({ ...form, order_id: `ORDER-${Date.now()}` });
       loadTransactions();
 
@@ -496,9 +705,14 @@ function Transactions() {
   }
 
   async function loadTransactions() {
+    if (!apiKey) {
+      setMessage("Masukkan Secret API Key untuk mengambil transaksi.");
+      return;
+    }
+
     try {
       const data = await transactionRequest("/api/v1/transactions");
-      setTransactions(data.data.transactions);
+      setTransactions(data.data.transactions || []);
     } catch (error) {
       setMessage(error.message || "Gagal mengambil transaksi.");
     }
@@ -529,13 +743,13 @@ function Transactions() {
   }, []);
 
   return (
-    <main className="container">
-      <section className="dashboardHeader">
+    <main className="container pageContainer">
+      <section className="pageHeader">
         <div>
           <p className="eyebrow">Transaction Management</p>
           <h1>Transactions</h1>
           <p>
-            Buat transaksi sandbox, buka payment simulator, dan kelola status
+            Buat transaksi sandbox, buka payment simulator, dan pantau status
             transaksi.
           </p>
         </div>
@@ -544,14 +758,34 @@ function Transactions() {
       <section className="gridTwo">
         <div className="panel">
           <h2>Secret API Key</h2>
-          <p>Masukkan secret API key dari dashboard.</p>
+          <p>
+            Gunakan secret API key dari dashboard. Key ini disimpan di browser
+            lokal kamu.
+          </p>
 
           <label>Secret API Key</label>
-          <input value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+          <input
+            placeholder="sk_test_xxxxx"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
 
-          <button onClick={saveApiKey} className="button primary full">
-            Simpan API Key
-          </button>
+          <div className="actions">
+            <button onClick={saveApiKey} className="button primary">
+              Simpan API Key
+            </button>
+
+            <button
+              onClick={() => {
+                setApiKey("");
+                setSecretApiKey("");
+                setMessage("Secret API key di browser sudah dikosongkan.");
+              }}
+              className="button ghost"
+            >
+              Clear
+            </button>
+          </div>
         </div>
 
         <form className="panel" onSubmit={createTransaction}>
@@ -566,12 +800,14 @@ function Transactions() {
           <label>Amount</label>
           <input
             type="number"
+            min="1000"
             value={form.amount}
             onChange={(e) => setForm({ ...form, amount: e.target.value })}
           />
 
           <label>Customer Name</label>
           <input
+            placeholder="Nama customer"
             value={form.customer_name}
             onChange={(e) =>
               setForm({ ...form, customer_name: e.target.value })
@@ -580,6 +816,8 @@ function Transactions() {
 
           <label>Customer Email</label>
           <input
+            type="email"
+            placeholder="customer@email.com"
             value={form.customer_email}
             onChange={(e) =>
               setForm({ ...form, customer_email: e.target.value })
@@ -615,14 +853,41 @@ function Transactions() {
 
       <section className="panel">
         <div className="sectionHeader">
-          <h2>Transaction History</h2>
-          <button onClick={loadTransactions} className="button secondary small">
+          <div>
+            <h2>Transaction History</h2>
+            <p>Cari transaksi berdasarkan order ID, transaction ID, atau customer.</p>
+          </div>
+
+          <button onClick={loadTransactions} className="button ghost small">
             Refresh
           </button>
         </div>
 
-        {transactions.length === 0 ? (
-          <p>Belum ada transaksi.</p>
+        <div className="toolbar">
+          <input
+            placeholder="Cari transaksi..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="ALL">Semua Status</option>
+            <option value="PENDING">Pending</option>
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed</option>
+            <option value="EXPIRED">Expired</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+
+        {filteredTransactions.length === 0 ? (
+          <div className="emptyState">
+            <h3>Belum ada transaksi</h3>
+            <p>Buat transaksi pertama kamu dari form di atas.</p>
+          </div>
         ) : (
           <div className="tableWrap">
             <table>
@@ -639,12 +904,10 @@ function Transactions() {
               </thead>
 
               <tbody>
-                {transactions.map((trx) => (
+                {filteredTransactions.map((trx) => (
                   <tr key={trx.transactionId}>
                     <td>
-                      <span className={`badge ${trx.status.toLowerCase()}`}>
-                        {trx.status}
-                      </span>
+                      <StatusBadge status={trx.status} />
                     </td>
                     <td>{trx.orderId}</td>
                     <td>{formatRupiah(trx.amount)}</td>
@@ -686,11 +949,29 @@ function Transactions() {
 function WebhookLogs() {
   const [logs, setLogs] = useState([]);
   const [message, setMessage] = useState("");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+
+  const filteredLogs = useMemo(() => {
+    return logs.filter((log) => {
+      const keyword = search.toLowerCase();
+
+      const matchesSearch =
+        log.transactionId?.toLowerCase().includes(keyword) ||
+        log.eventName?.toLowerCase().includes(keyword) ||
+        log.callbackUrl?.toLowerCase().includes(keyword);
+
+      const matchesStatus =
+        statusFilter === "ALL" || log.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [logs, search, statusFilter]);
 
   async function loadLogs() {
     try {
       const data = await apiRequest("/api/webhook-logs");
-      setLogs(data.data.logs);
+      setLogs(data.data.logs || []);
       setMessage("");
     } catch (error) {
       setMessage(error.message || "Gagal mengambil webhook logs.");
@@ -715,18 +996,18 @@ function WebhookLogs() {
   }, []);
 
   return (
-    <main className="container">
-      <section className="dashboardHeader">
+    <main className="container pageContainer">
+      <section className="pageHeader">
         <div>
           <p className="eyebrow">Webhook Monitoring</p>
           <h1>Webhook Logs</h1>
           <p>
-            Pantau callback yang dikirim ke developer, response status, attempt,
-            dan retry webhook.
+            Pantau callback yang dikirim ke endpoint developer, response status,
+            attempt, dan retry webhook.
           </p>
         </div>
 
-        <button onClick={loadLogs} className="button secondary">
+        <button onClick={loadLogs} className="button ghost">
           Refresh
         </button>
       </section>
@@ -734,8 +1015,28 @@ function WebhookLogs() {
       {message && <div className="message">{message}</div>}
 
       <section className="panel">
-        {logs.length === 0 ? (
-          <p>Webhook log masih kosong.</p>
+        <div className="toolbar">
+          <input
+            placeholder="Cari webhook log..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="ALL">Semua Status</option>
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed</option>
+          </select>
+        </div>
+
+        {filteredLogs.length === 0 ? (
+          <div className="emptyState">
+            <h3>Webhook log masih kosong</h3>
+            <p>Log akan muncul setelah transaksi disimulasikan.</p>
+          </div>
         ) : (
           <div className="tableWrap">
             <table>
@@ -753,23 +1054,21 @@ function WebhookLogs() {
               </thead>
 
               <tbody>
-                {logs.map((log) => (
+                {filteredLogs.map((log) => (
                   <tr key={log.id}>
                     <td>
-                      <span className={`badge ${log.status.toLowerCase()}`}>
-                        {log.status}
-                      </span>
+                      <StatusBadge status={log.status} />
                     </td>
                     <td>{log.eventName}</td>
                     <td>{log.transactionId}</td>
                     <td>{log.responseStatus || "-"}</td>
                     <td>{log.attempt}</td>
-                    <td>{log.callbackUrl}</td>
+                    <td className="urlCell">{log.callbackUrl}</td>
                     <td>{formatDate(log.createdAt)}</td>
                     <td>
                       <button
                         onClick={() => retryLog(log.id)}
-                        className="button secondary small"
+                        className="button ghost small"
                       >
                         Retry
                       </button>

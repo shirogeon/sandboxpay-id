@@ -3,644 +3,411 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.send(`
-<!DOCTYPE html>
+  const baseUrl =
+    process.env.BACKEND_URL || `${req.protocol}://${req.get("host")}`;
+
+  res.send(`<!doctype html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SandboxPay ID API Documentation</title>
+
   <style>
     * {
       box-sizing: border-box;
-      scroll-behavior: smooth;
-      font-family: Arial, sans-serif;
+    }
+
+    :root {
+      --bg: #f7f3ea;
+      --card: #ffffff;
+      --text: #1f1f23;
+      --muted: #706a64;
+      --border: #e5ded2;
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --primary-soft: #ede9fe;
+      --accent: #f59e0b;
+      --dark: #241f2f;
+      --success: #4d7c0f;
+      --success-soft: #ecfccb;
+      --shadow: 0 18px 45px rgba(31, 31, 35, 0.08);
     }
 
     body {
       margin: 0;
-      background: #0f172a;
-      color: #e5e7eb;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.12), transparent 28rem),
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 26rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
+    a {
+      color: inherit;
     }
 
-    aside {
+    .nav {
+      min-height: 74px;
+      padding: 0 28px;
+      background: rgba(255,255,255,.84);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #020617;
-      border-right: 1px solid #1f2937;
-      padding: 24px;
-    }
-
-    main {
-      padding: 32px;
-      max-width: 1050px;
+      backdrop-filter: blur(16px);
+      z-index: 10;
     }
 
     .brand {
-      margin-bottom: 28px;
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
     }
 
-    .brand h2 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .brand p {
-      color: #94a3b8;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    nav a {
-      display: block;
-      color: #cbd5e1;
+    .nav a {
       text-decoration: none;
-      padding: 10px 0;
-      border-bottom: 1px solid #111827;
-      font-size: 14px;
+      font-weight: 800;
+      background: white;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 999px;
     }
 
-    nav a:hover {
-      color: #93c5fd;
+    .container {
+      max-width: 1120px;
+      margin: auto;
+      padding: 54px 24px;
     }
 
-    section {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 22px;
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
     }
 
     h1 {
-      margin-top: 0;
-      font-size: 34px;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: .98;
+      margin: 12px 0 18px;
+      letter-spacing: -.07em;
     }
 
     h2 {
-      margin-top: 0;
-      font-size: 24px;
+      font-size: 34px;
+      margin: 0 0 12px;
+      letter-spacing: -.05em;
     }
 
     h3 {
-      margin-top: 24px;
-      font-size: 18px;
+      margin: 0 0 10px;
     }
 
-    p, li {
-      color: #cbd5e1;
-      line-height: 1.7;
+    p {
+      color: var(--muted);
+      line-height: 1.75;
     }
 
-    .muted {
-      color: #94a3b8;
+    .card {
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
     }
 
-    .warning {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #fde68a;
-      padding: 14px;
-      border-radius: 12px;
-      line-height: 1.6;
-      margin-top: 16px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .success {
-      background: rgba(22, 163, 74, 0.12);
-      border: 1px solid rgba(22, 163, 74, 0.35);
-      color: #bbf7d0;
-      padding: 14px;
-      border-radius: 12px;
-      line-height: 1.6;
-      margin-top: 16px;
+    .endpoint {
+      border-left: 5px solid var(--primary);
     }
 
     .method {
       display: inline-block;
-      padding: 4px 9px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      padding: 7px 10px;
       border-radius: 999px;
+      font-weight: 900;
       font-size: 12px;
-      font-weight: bold;
       margin-right: 8px;
     }
 
-    .GET {
-      background: rgba(59, 130, 246, 0.18);
-      color: #93c5fd;
-    }
-
-    .POST {
-      background: rgba(22, 163, 74, 0.18);
-      color: #86efac;
-    }
-
-    .endpoint {
-      font-family: Consolas, monospace;
-      background: #020617;
-      border: 1px solid #1f2937;
-      padding: 10px 12px;
-      border-radius: 10px;
-      display: inline-block;
-      color: #e5e7eb;
-      margin: 8px 0;
-      word-break: break-all;
+    code {
+      color: var(--primary-dark);
+      font-weight: 800;
     }
 
     pre {
-      background: #020617;
-      border: 1px solid #1f2937;
-      padding: 16px;
-      border-radius: 12px;
+      margin: 14px 0 0;
+      background: var(--dark);
+      color: #f7f3ea;
+      padding: 18px;
+      border-radius: 16px;
       overflow-x: auto;
-      color: #d1d5db;
-      line-height: 1.5;
-      font-size: 14px;
+      line-height: 1.65;
+      font-size: 13px;
     }
 
-    code {
-      font-family: Consolas, monospace;
+    .baseUrl {
+      background: #f5f0ff;
+      border: 1px solid #ddd6fe;
+      border-radius: 18px;
+      padding: 18px;
+      word-break: break-all;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 14px;
-      overflow: hidden;
-      border-radius: 12px;
+    .notice {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c2d12;
+      border-radius: 18px;
+      padding: 18px;
+      line-height: 1.7;
+      margin-bottom: 16px;
     }
 
-    th, td {
-      border-bottom: 1px solid #1f2937;
-      padding: 12px;
-      text-align: left;
-      vertical-align: top;
-      color: #cbd5e1;
-      font-size: 14px;
+    .success {
+      background: var(--success-soft);
+      color: var(--success);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      display: inline-block;
     }
 
-    th {
-      color: #e5e7eb;
-      background: #020617;
-    }
-
-    .quick-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .quick-links a {
-      color: white;
-      text-decoration: none;
-      background: #2563eb;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .quick-links a:hover {
-      background: #1d4ed8;
-    }
-
-    @media (max-width: 900px) {
-      .layout {
+    @media (max-width: 860px) {
+      .hero,
+      .grid {
         grid-template-columns: 1fr;
-      }
-
-      aside {
-        position: static;
-        height: auto;
-      }
-
-      main {
-        padding: 18px;
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="layout">
-    <aside>
-      <div class="brand">
-        <h2>SandboxPay ID</h2>
-        <p>Mock payment API untuk belajar integrasi payment gateway tanpa uang asli.</p>
+  <nav class="nav">
+    <div class="brand">SandboxPay ID Docs</div>
+    <a href="${baseUrl}/api/health">Health Check</a>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">API Documentation</p>
+        <h1>Mock Payment Gateway API untuk testing developer.</h1>
+        <p>
+          Gunakan dokumentasi ini untuk mencoba authentication, API key,
+          transaction API, payment simulator, dan webhook callback.
+        </p>
       </div>
 
-      <nav>
-        <a href="#introduction">Introduction</a>
-        <a href="#base-url">Base URL</a>
-        <a href="#authentication">Authentication</a>
-        <a href="#auth-endpoints">Developer Auth</a>
-        <a href="#api-key">API Key</a>
-        <a href="#transactions">Transactions</a>
-        <a href="#payment-simulator">Payment Simulator</a>
-        <a href="#webhook">Webhook</a>
-        <a href="#webhook-logs">Webhook Logs</a>
-        <a href="#status">Status</a>
-        <a href="#error-codes">Error Codes</a>
-        <a href="#testing-tools">Testing Tools</a>
-      </nav>
-    </aside>
-
-    <main>
-      <section id="introduction">
-        <h1>SandboxPay ID API Documentation</h1>
-        <p>
-          SandboxPay ID adalah mock payment gateway API untuk developer yang ingin belajar integrasi pembayaran,
-          transaction status, payment URL, API key authentication, dan webhook callback.
-        </p>
-
-        <div class="warning">
-          Platform ini hanya untuk edukasi dan testing. SandboxPay ID tidak memproses uang asli,
-          tidak terhubung dengan e-wallet resmi, dan tidak boleh dipakai sebagai payment gateway production.
+      <div class="card">
+        <h3>Base URL</h3>
+        <div class="baseUrl">
+          <code>${baseUrl}</code>
         </div>
-
-        <div class="quick-links">
-          <a href="/tester">API Tester</a>
-          <a href="/transaction-tester">Transaction Tester</a>
-          <a href="/webhook-log-tester">Webhook Log Tester</a>
-          <a href="/webhook-test/logs">Dummy Webhook Logs</a>
-        </div>
-      </section>
-
-      <section id="base-url">
-        <h2>Base URL</h2>
-        <p>Untuk local development:</p>
-        <pre><code>http://localhost:5000</code></pre>
-
-        <p>Untuk production nanti, base URL akan mengikuti URL backend hasil deploy.</p>
-        <pre><code>https://sandboxpay-api.onrender.com</code></pre>
-      </section>
-
-      <section id="authentication">
-        <h2>Authentication</h2>
         <p>
-          Ada dua jenis authentication di SandboxPay ID:
+          Semua endpoint production menggunakan base URL di atas.
         </p>
+      </div>
+    </section>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Jenis</th>
-              <th>Dipakai Untuk</th>
-              <th>Header</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>JWT Token</td>
-              <td>Dashboard developer, API key management, webhook logs</td>
-              <td><code>Authorization: Bearer jwt_token</code></td>
-            </tr>
-            <tr>
-              <td>Secret API Key</td>
-              <td>Create transaction, list transaction, check transaction, cancel transaction</td>
-              <td><code>Authorization: Bearer sk_test_xxxxx</code></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+    <div class="notice">
+      SandboxPay ID hanya untuk edukasi dan testing. Sistem ini tidak memproses
+      uang asli, tidak terhubung ke bank, e-wallet, QRIS, atau payment gateway resmi.
+    </div>
 
-      <section id="auth-endpoints">
-        <h2>Developer Auth</h2>
-
-        <h3><span class="method POST">POST</span> Register Developer</h3>
-        <div class="endpoint">/api/auth/register</div>
-
-        <p>Request body:</p>
-        <pre><code>{
-  "name": "Shiroge Developer",
-  "email": "shiroge@example.com",
-  "password": "password123"
-}</code></pre>
-
-        <p>Success response:</p>
-        <pre><code>{
-  "success": true,
-  "message": "Register berhasil",
-  "data": {
-    "user": {
-      "id": "user_id",
-      "name": "Shiroge Developer",
-      "email": "shiroge@example.com",
-      "role": "DEVELOPER"
-    },
-    "token": "jwt_token"
-  }
-}</code></pre>
-
-        <h3><span class="method POST">POST</span> Login Developer</h3>
-        <div class="endpoint">/api/auth/login</div>
-
-        <p>Request body:</p>
-        <pre><code>{
-  "email": "shiroge@example.com",
-  "password": "password123"
-}</code></pre>
-
-        <h3><span class="method GET">GET</span> Get Profile</h3>
-        <div class="endpoint">/api/auth/me</div>
-
-        <p>Header:</p>
-        <pre><code>Authorization: Bearer jwt_token</code></pre>
-      </section>
-
-      <section id="api-key">
-        <h2>API Key</h2>
-
-        <h3><span class="method GET">GET</span> List API Keys</h3>
-        <div class="endpoint">/api/keys</div>
-
-        <p>Header:</p>
-        <pre><code>Authorization: Bearer jwt_token</code></pre>
-
-        <h3><span class="method POST">POST</span> Generate API Key</h3>
-        <div class="endpoint">/api/keys/generate</div>
-
-        <p>Secret key hanya ditampilkan sekali saat dibuat.</p>
-
-        <pre><code>{
-  "success": true,
-  "message": "API key berhasil dibuat. Simpan API key ini karena hanya ditampilkan sekali.",
-  "data": {
-    "apiKey": {
-      "id": "api_key_id",
-      "keyPrefix": "sk_test_xxxxx",
-      "isActive": true
-    },
-    "secretKey": "sk_test_xxxxxxxxxxxxxxxxx"
-  }
-}</code></pre>
-
-        <h3><span class="method POST">POST</span> Reset API Key</h3>
-        <div class="endpoint">/api/keys/reset</div>
-
-        <p>API key lama akan dinonaktifkan dan sistem membuat API key baru.</p>
-      </section>
-
-      <section id="transactions">
-        <h2>Transactions</h2>
-
-        <h3><span class="method POST">POST</span> Create Transaction</h3>
-        <div class="endpoint">/api/v1/transactions</div>
-
-        <p>Header:</p>
-        <pre><code>Authorization: Bearer sk_test_xxxxxxxxx
-Content-Type: application/json</code></pre>
-
-        <p>Request body:</p>
-        <pre><code>{
-  "order_id": "ORDER-001",
-  "amount": 50000,
-  "customer_name": "Bayhaqi",
-  "customer_email": "bayhaqi@example.com",
-  "payment_method": "MOCK_EWALLET",
-  "callback_url": "http://localhost:5000/webhook-test/receive",
-  "redirect_url": "https://example.com/payment-finish"
-}</code></pre>
-
-        <p>Success response:</p>
-        <pre><code>{
-  "success": true,
-  "message": "Transaction berhasil dibuat",
-  "data": {
-    "transaction": {
-      "transactionId": "trx_xxxxx",
-      "orderId": "ORDER-001",
-      "amount": 50000,
-      "paymentMethod": "MOCK_EWALLET",
-      "status": "PENDING",
-      "paymentUrl": "http://localhost:5000/pay/trx_xxxxx",
-      "callbackUrl": "http://localhost:5000/webhook-test/receive",
-      "expiredAt": "2026-06-14T10:00:00.000Z"
-    }
-  }
-}</code></pre>
-
-        <h3><span class="method GET">GET</span> List Transactions</h3>
-        <div class="endpoint">/api/v1/transactions</div>
-
-        <h3><span class="method GET">GET</span> Get Transaction Detail</h3>
-        <div class="endpoint">/api/v1/transactions/:transactionId</div>
-
-        <h3><span class="method POST">POST</span> Cancel Transaction</h3>
-        <div class="endpoint">/api/v1/transactions/:transactionId/cancel</div>
-      </section>
-
-      <section id="payment-simulator">
-        <h2>Payment Simulator</h2>
+    <section class="grid">
+      <div class="card">
+        <h3>Authentication</h3>
         <p>
-          Payment simulator adalah halaman tiruan pembayaran. Halaman ini muncul dari field
-          <code>paymentUrl</code> setelah transaksi dibuat.
+          Register dan login menghasilkan JWT token untuk akses dashboard API key.
         </p>
+      </div>
 
-        <h3><span class="method GET">GET</span> Open Payment Page</h3>
-        <div class="endpoint">/pay/:transactionId</div>
-
-        <h3><span class="method POST">POST</span> Simulate Payment Status</h3>
-        <div class="endpoint">/pay/:transactionId/simulate</div>
-
-        <p>Request body:</p>
-        <pre><code>{
-  "status": "SUCCESS"
-}</code></pre>
-
-        <p>Status yang bisa disimulasikan:</p>
-        <pre><code>SUCCESS
-FAILED
-PENDING
-EXPIRED</code></pre>
-      </section>
-
-      <section id="webhook">
-        <h2>Webhook</h2>
+      <div class="card">
+        <h3>API Key</h3>
         <p>
-          Webhook akan dikirim ke <code>callback_url</code> saat status transaksi berubah
-          menjadi SUCCESS, FAILED, EXPIRED, atau CANCELLED.
+          Secret API key dipakai sebagai Bearer Token untuk endpoint transaksi.
         </p>
+      </div>
 
-        <p>Headers yang dikirim:</p>
-        <pre><code>Content-Type: application/json
-X-Sandboxpay-Event: payment.success
-X-Sandboxpay-Signature: hmac_sha256_signature</code></pre>
+      <div class="card">
+        <h3>Transaction</h3>
+        <p>
+          Buat transaksi sandbox dan dapatkan payment URL untuk simulasi pembayaran.
+        </p>
+      </div>
 
-        <p>Payload webhook:</p>
-        <pre><code>{
+      <div class="card">
+        <h3>Webhook</h3>
+        <p>
+          Setelah status pembayaran berubah, backend mengirim callback ke callback_url.
+        </p>
+      </div>
+    </section>
+
+    <section class="card endpoint">
+      <h2>Auth</h2>
+
+      <h3><span class="method">POST</span> /api/auth/register</h3>
+      <pre>curl -X POST ${baseUrl}/api/auth/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Andi Developer",
+    "email": "andi@example.com",
+    "password": "password123"
+  }'</pre>
+
+      <h3><span class="method">POST</span> /api/auth/login</h3>
+      <pre>curl -X POST ${baseUrl}/api/auth/login \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "email": "andi@example.com",
+    "password": "password123"
+  }'</pre>
+
+      <h3><span class="method">GET</span> /api/auth/me</h3>
+      <pre>curl ${baseUrl}/api/auth/me \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+    </section>
+
+    <section class="card endpoint">
+      <h2>API Key</h2>
+
+      <h3><span class="method">GET</span> /api/keys</h3>
+      <pre>curl ${baseUrl}/api/keys \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+
+      <h3><span class="method">POST</span> /api/keys/generate</h3>
+      <pre>curl -X POST ${baseUrl}/api/keys/generate \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+
+      <h3><span class="method">POST</span> /api/keys/reset</h3>
+      <pre>curl -X POST ${baseUrl}/api/keys/reset \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+    </section>
+
+    <section class="card endpoint">
+      <h2>Transactions</h2>
+
+      <h3><span class="method">POST</span> /api/v1/transactions</h3>
+      <pre>curl -X POST ${baseUrl}/api/v1/transactions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY" \\
+  -d '{
+    "order_id": "ORDER-001",
+    "amount": 50000,
+    "customer_name": "Andi",
+    "customer_email": "andi@example.com",
+    "payment_method": "MOCK_EWALLET",
+    "callback_url": "${baseUrl}/webhook-test/receive"
+  }'</pre>
+
+      <h3><span class="method">GET</span> /api/v1/transactions</h3>
+      <pre>curl ${baseUrl}/api/v1/transactions \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+
+      <h3><span class="method">GET</span> /api/v1/transactions/:transactionId</h3>
+      <pre>curl ${baseUrl}/api/v1/transactions/trx_xxxxx \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+
+      <h3><span class="method">POST</span> /api/v1/transactions/:transactionId/cancel</h3>
+      <pre>curl -X POST ${baseUrl}/api/v1/transactions/trx_xxxxx/cancel \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+    </section>
+
+    <section class="card endpoint">
+      <h2>Payment Simulator</h2>
+
+      <h3><span class="method">GET</span> /pay/:transactionId</h3>
+      <pre>${baseUrl}/pay/trx_xxxxx</pre>
+
+      <p>
+        Buka payment URL dari response create transaction, lalu pilih status:
+        success, failed, pending, atau expired.
+      </p>
+    </section>
+
+    <section class="card endpoint">
+      <h2>Webhook Logs</h2>
+
+      <h3><span class="method">GET</span> /api/webhook-logs</h3>
+      <pre>curl ${baseUrl}/api/webhook-logs \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+
+      <h3><span class="method">POST</span> /api/webhook-logs/:id/retry</h3>
+      <pre>curl -X POST ${baseUrl}/api/webhook-logs/WEBHOOK_LOG_ID/retry \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+    </section>
+
+    <section class="card endpoint">
+      <h2>Webhook Payload Example</h2>
+
+      <span class="success">payment.success</span>
+
+      <pre>{
   "event": "payment.success",
   "transaction_id": "trx_xxxxx",
   "order_id": "ORDER-001",
   "amount": 50000,
   "payment_method": "MOCK_EWALLET",
   "status": "SUCCESS",
-  "customer_name": "Bayhaqi",
-  "customer_email": "bayhaqi@example.com",
+  "customer_name": "Andi",
+  "customer_email": "andi@example.com",
   "paid_at": "2026-06-14T10:00:00.000Z",
   "expired_at": "2026-06-14T10:30:00.000Z",
   "created_at": "2026-06-14T09:59:00.000Z",
   "updated_at": "2026-06-14T10:00:00.000Z"
-}</code></pre>
+}</pre>
+    </section>
 
-        <div class="success">
-          Untuk testing lokal, gunakan callback URL:
-          <br />
-          <code>http://localhost:5000/webhook-test/receive</code>
-        </div>
-      </section>
+    <section class="card">
+      <h2>JavaScript Fetch Example</h2>
 
-      <section id="webhook-logs">
-        <h2>Webhook Logs</h2>
+      <pre>const response = await fetch("${baseUrl}/api/v1/transactions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_SECRET_API_KEY"
+  },
+  body: JSON.stringify({
+    order_id: "ORDER-001",
+    amount: 50000,
+    customer_name: "Andi",
+    customer_email: "andi@example.com",
+    payment_method: "MOCK_EWALLET",
+    callback_url: "${baseUrl}/webhook-test/receive"
+  })
+});
 
-        <h3><span class="method GET">GET</span> List Webhook Logs</h3>
-        <div class="endpoint">/api/webhook-logs</div>
-
-        <p>Header:</p>
-        <pre><code>Authorization: Bearer jwt_token</code></pre>
-
-        <h3><span class="method GET">GET</span> Webhook Log Detail</h3>
-        <div class="endpoint">/api/webhook-logs/:id</div>
-
-        <h3><span class="method POST">POST</span> Retry Webhook</h3>
-        <div class="endpoint">/api/webhook-logs/:id/retry</div>
-      </section>
-
-      <section id="status">
-        <h2>Transaction Status</h2>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Arti</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>PENDING</code></td>
-              <td>Transaksi dibuat dan masih menunggu pembayaran.</td>
-            </tr>
-            <tr>
-              <td><code>SUCCESS</code></td>
-              <td>Pembayaran disimulasikan berhasil.</td>
-            </tr>
-            <tr>
-              <td><code>FAILED</code></td>
-              <td>Pembayaran disimulasikan gagal.</td>
-            </tr>
-            <tr>
-              <td><code>EXPIRED</code></td>
-              <td>Transaksi sudah melewati waktu expired atau disimulasikan expired.</td>
-            </tr>
-            <tr>
-              <td><code>CANCELLED</code></td>
-              <td>Transaksi dibatalkan oleh developer.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section id="error-codes">
-        <h2>Error Codes</h2>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Error Code</th>
-              <th>Arti</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>ROUTE_NOT_FOUND</code></td>
-              <td>Route tidak ditemukan atau method HTTP salah.</td>
-            </tr>
-            <tr>
-              <td><code>TOKEN_REQUIRED</code></td>
-              <td>JWT token belum dikirim.</td>
-            </tr>
-            <tr>
-              <td><code>INVALID_TOKEN</code></td>
-              <td>JWT token salah atau expired.</td>
-            </tr>
-            <tr>
-              <td><code>API_KEY_REQUIRED</code></td>
-              <td>Secret API key belum dikirim.</td>
-            </tr>
-            <tr>
-              <td><code>INVALID_API_KEY</code></td>
-              <td>Secret API key salah atau sudah tidak aktif.</td>
-            </tr>
-            <tr>
-              <td><code>ORDER_ID_ALREADY_EXISTS</code></td>
-              <td>Order ID sudah pernah dipakai oleh developer yang sama.</td>
-            </tr>
-            <tr>
-              <td><code>TRANSACTION_NOT_FOUND</code></td>
-              <td>Transaction ID tidak ditemukan.</td>
-            </tr>
-            <tr>
-              <td><code>TRANSACTION_ALREADY_FINAL</code></td>
-              <td>Status transaksi sudah final dan tidak bisa diubah lagi.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section id="testing-tools">
-        <h2>Testing Tools</h2>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Tool</th>
-              <th>URL</th>
-              <th>Fungsi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>API Tester</td>
-              <td><a href="/tester">/tester</a></td>
-              <td>Register, login, profile, generate API key.</td>
-            </tr>
-            <tr>
-              <td>Transaction Tester</td>
-              <td><a href="/transaction-tester">/transaction-tester</a></td>
-              <td>Create transaction, list transaction, detail, cancel.</td>
-            </tr>
-            <tr>
-              <td>Payment Simulator</td>
-              <td><code>/pay/:transactionId</code></td>
-              <td>Simulasi pembayaran sukses, gagal, pending, expired.</td>
-            </tr>
-            <tr>
-              <td>Webhook Log Tester</td>
-              <td><a href="/webhook-log-tester">/webhook-log-tester</a></td>
-              <td>Melihat webhook log dari database dan retry webhook.</td>
-            </tr>
-            <tr>
-              <td>Dummy Webhook Receiver</td>
-              <td><a href="/webhook-test/logs">/webhook-test/logs</a></td>
-              <td>Melihat webhook yang diterima oleh dummy receiver.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </main>
-  </div>
+const data = await response.json();
+console.log(data);</pre>
+    </section>
+  </main>
 </body>
-</html>
-  `);
+</html>`);
 });
 
 module.exports = router;

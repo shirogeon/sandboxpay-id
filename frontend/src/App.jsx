@@ -441,7 +441,7 @@ function Transactions() {
     customer_name: "Bayhaqi",
     customer_email: "bayhaqi@example.com",
     payment_method: "MOCK_EWALLET",
-    callback_url: "http://localhost:5000/webhook-test/receive",
+    callback_url: `${API_BASE_URL}/webhook-test/receive`,
   });
 
   function saveApiKey() {

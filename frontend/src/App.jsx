@@ -81,11 +81,18 @@ function Landing() {
       <section className="publicHero">
         <div className="container publicHeroGrid">
           <div className="publicHeroText">
-            <img
-              src="/brand/sandboxpay-logo.png"
-              alt="SandboxPay ID logo"
-              className="heroBrandLogo"
-            />
+            <div className="heroBrandLockup">
+              <img
+                src="/brand/sandboxpay-icon.png"
+                alt="SandboxPay ID icon"
+                className="heroBrandIcon"
+              />
+
+              <div>
+                <strong>SandboxPay ID</strong>
+                <span>Payment sandbox for developers</span>
+              </div>
+            </div>
 
             <div className="productBadge">Sandbox Payment Gateway API</div>
 

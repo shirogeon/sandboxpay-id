@@ -24,6 +24,8 @@ function formatRupiah(value) {
 }
 
 function copyText(value, callback) {
+  if (!value) return;
+
   navigator.clipboard.writeText(value);
   callback?.();
 }
@@ -38,8 +40,12 @@ function Navbar({ user, onLogout }) {
   return (
     <nav className="navbar">
       <Link to="/" className="brand">
-        <span className="brandMark">S</span>
-        SandboxPay ID
+        <img
+          src="/brand/sandboxpay-icon.png"
+          alt="SandboxPay ID icon"
+          className="brandLogo"
+        />
+        <span>SandboxPay ID</span>
       </Link>
 
       <div className="navLinks">
@@ -75,6 +81,12 @@ function Landing() {
       <section className="publicHero">
         <div className="container publicHeroGrid">
           <div className="publicHeroText">
+            <img
+              src="/brand/sandboxpay-logo.png"
+              alt="SandboxPay ID logo"
+              className="heroBrandLogo"
+            />
+
             <div className="productBadge">Sandbox Payment Gateway API</div>
 
             <h1>Mock payment gateway untuk latihan integrasi pembayaran.</h1>
@@ -105,10 +117,12 @@ function Landing() {
                 <strong>API Key</strong>
                 <span>Bearer token style</span>
               </div>
+
               <div>
                 <strong>Webhook</strong>
                 <span>Callback simulator</span>
               </div>
+
               <div>
                 <strong>No Real Money</strong>
                 <span>Aman untuk belajar</span>
@@ -134,7 +148,7 @@ function Landing() {
 }`}</pre>
 
             <div className="terminalResult">
-              <span className="badge success">SUCCESS</span>
+              <StatusBadge status="SUCCESS" />
               <p>payment_url generated</p>
             </div>
           </div>
@@ -513,6 +527,7 @@ function Dashboard({ user, refreshUser }) {
           <Link to="/transactions" className="button secondary">
             Buat Transaksi
           </Link>
+
           <Link to="/webhooks" className="button ghost">
             Lihat Webhook Logs
           </Link>
@@ -1161,7 +1176,12 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/register" element={<Register refreshUser={refreshUser} />} />
+
+        <Route
+          path="/register"
+          element={<Register refreshUser={refreshUser} />}
+        />
+
         <Route path="/login" element={<Login refreshUser={refreshUser} />} />
 
         <Route

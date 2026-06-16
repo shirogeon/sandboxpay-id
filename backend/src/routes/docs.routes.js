@@ -22,7 +22,24 @@ router.get("/", (req, res) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>SandboxPay ID API Documentation</title>
+  <meta
+  name="description"
+  content="Dokumentasi SandboxPay ID API untuk testing payment gateway, API key, transaction API, payment simulator, webhook callback, dan webhook logs."
+  />
 
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#7c3aed" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SandboxPay ID API Documentation" />
+  <meta
+    property="og:description"
+    content="Dokumentasi API untuk belajar integrasi mock payment gateway tanpa uang asli."
+  />
+  <meta property="og:image" content="https://sandboxpay-id.vercel.app/brand/sandboxpay-og.png" />
+
+  <link rel="icon" type="image/png" href="https://sandboxpay-id.vercel.app/brand/sandboxpay-icon.png" />
+  
   <style>
     * {
       box-sizing: border-box;

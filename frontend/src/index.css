@@ -1227,3 +1227,49 @@ tr:hover td {
     font-size: 31px;
   }
 }
+
+/* =========================================================
+   BRAND LOGO ASSETS
+========================================================= */
+
+.brandLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 10px 22px rgba(37, 31, 47, 0.14);
+}
+
+.heroBrandLogo {
+  display: block;
+  width: min(420px, 100%);
+  height: auto;
+  margin-bottom: 22px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .brandLogo {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+  }
+
+  .heroBrandLogo {
+    width: min(300px, 100%);
+    margin-bottom: 18px;
+  }
+}
+
+@media (max-width: 430px) {
+  .brandLogo {
+    width: 35px;
+    height: 35px;
+    border-radius: 12px;
+  }
+
+  .heroBrandLogo {
+    width: min(260px, 100%);
+    margin-bottom: 16px;
+  }
+}

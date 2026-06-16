@@ -2,15 +2,25 @@ const express = require("express");
 
 const router = express.Router();
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 router.get("/", (req, res) => {
-  const baseUrl =
-    process.env.BACKEND_URL || `${req.protocol}://${req.get("host")}`;
+  const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get("host")}`;
+  const safeBaseUrl = escapeHtml(baseUrl);
 
   res.send(`<!doctype html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>SandboxPay ID API Documentation</title>
 
   <style>
@@ -21,14 +31,16 @@ router.get("/", (req, res) => {
     :root {
       --bg: #f7f3ea;
       --card: #ffffff;
+      --muted-card: #fbf8f1;
       --text: #1f1f23;
       --muted: #706a64;
       --border: #e5ded2;
       --primary: #7c3aed;
       --primary-dark: #6d28d9;
       --primary-soft: #ede9fe;
+      --dark: #251f2f;
+      --code: #17121f;
       --accent: #f59e0b;
-      --dark: #241f2f;
       --success: #4d7c0f;
       --success-soft: #ecfccb;
       --shadow: 0 18px 45px rgba(31, 31, 35, 0.08);
@@ -51,30 +63,39 @@ router.get("/", (req, res) => {
     .nav {
       min-height: 74px;
       padding: 0 28px;
-      background: rgba(255,255,255,.84);
+      background: rgba(255,255,255,.88);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       position: sticky;
       top: 0;
+      z-index: 20;
       backdrop-filter: blur(16px);
-      z-index: 10;
     }
 
     .brand {
       font-size: 21px;
       font-weight: 900;
       letter-spacing: -0.04em;
+      white-space: nowrap;
     }
 
-    .nav a {
+    .navActions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .navActions a {
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 900;
       background: white;
       border: 1px solid var(--border);
       padding: 10px 14px;
       border-radius: 999px;
+      white-space: nowrap;
     }
 
     .container {
@@ -85,95 +106,71 @@ router.get("/", (req, res) => {
 
     .hero {
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 28px;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 26px;
       align-items: center;
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
 
     .eyebrow {
-      color: var(--primary);
+      display: inline-flex;
+      width: fit-content;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid #ddd6fe;
+      padding: 8px 12px;
+      border-radius: 999px;
       font-weight: 900;
-      font-size: 13px;
-      letter-spacing: .18em;
+      font-size: 12px;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
     h1 {
-      font-size: clamp(42px, 6vw, 72px);
+      font-size: clamp(40px, 6vw, 72px);
       line-height: .98;
-      margin: 12px 0 18px;
+      margin: 16px 0 18px;
       letter-spacing: -.07em;
     }
 
     h2 {
-      font-size: 34px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.06;
       margin: 0 0 12px;
       letter-spacing: -.05em;
     }
 
     h3 {
-      margin: 0 0 10px;
+      margin: 22px 0 10px;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -.03em;
     }
 
     p {
       color: var(--muted);
       line-height: 1.75;
+      margin: 0 0 14px;
     }
 
     .card {
-      background: rgba(255,255,255,.88);
+      background: rgba(255,255,255,.9);
       border: 1px solid var(--border);
-      border-radius: 22px;
+      border-radius: 24px;
       padding: 24px;
       box-shadow: var(--shadow);
       margin-bottom: 16px;
+      overflow: hidden;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .endpoint {
-      border-left: 5px solid var(--primary);
-    }
-
-    .method {
-      display: inline-block;
-      background: var(--primary-soft);
-      color: var(--primary-dark);
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      margin-right: 8px;
-    }
-
-    code {
-      color: var(--primary-dark);
-      font-weight: 800;
-    }
-
-    pre {
-      margin: 14px 0 0;
-      background: var(--dark);
-      color: #f7f3ea;
-      padding: 18px;
-      border-radius: 16px;
-      overflow-x: auto;
-      line-height: 1.65;
-      font-size: 13px;
-    }
-
-    .baseUrl {
+    .baseBox {
       background: #f5f0ff;
       border: 1px solid #ddd6fe;
       border-radius: 18px;
-      padding: 18px;
+      padding: 16px;
       word-break: break-all;
+      color: var(--primary-dark);
+      font-weight: 900;
     }
 
     .notice {
@@ -181,25 +178,210 @@ router.get("/", (req, res) => {
       border: 1px solid #fed7aa;
       color: #7c2d12;
       border-radius: 18px;
-      padding: 18px;
+      padding: 16px;
       line-height: 1.7;
       margin-bottom: 16px;
     }
 
-    .success {
-      background: var(--success-soft);
-      color: var(--success);
-      padding: 6px 10px;
+    .featureGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,.9);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .feature span {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .endpoint {
+      border-left: 6px solid var(--primary);
+    }
+
+    .endpointTitle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    .endpointTitle h3 {
+      margin: 0;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .method {
+      flex: 0 0 auto;
+      display: inline-flex;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      padding: 7px 10px;
       border-radius: 999px;
       font-weight: 900;
       font-size: 12px;
-      display: inline-block;
+    }
+
+    .codeWrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+      background: var(--code);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    pre {
+      margin: 0;
+      min-width: max-content;
+      background: var(--code);
+      color: #f7f3ea;
+      padding: 18px;
+      line-height: 1.65;
+      font-size: 13px;
+      font-family: Consolas, Monaco, monospace;
+      white-space: pre;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .payloadBadge {
+      display: inline-flex;
+      background: var(--success-soft);
+      color: var(--success);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      padding: 34px 20px 54px;
+      line-height: 1.7;
     }
 
     @media (max-width: 860px) {
       .hero,
-      .grid {
+      .featureGrid {
         grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 34px 16px;
+      }
+
+      .nav {
+        min-height: auto;
+        padding: 14px 16px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .brand {
+        font-size: 21px;
+      }
+
+      .navActions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .navActions a {
+        text-align: center;
+        padding: 10px 8px;
+      }
+
+      h1 {
+        font-size: 38px;
+        line-height: 1.02;
+      }
+
+      h2 {
+        font-size: 30px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .card,
+      .feature {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .endpoint {
+        border-left-width: 4px;
+      }
+
+      .endpointTitle {
+        gap: 8px;
+      }
+
+      .endpointTitle h3 {
+        width: 100%;
+        font-size: 19px;
+      }
+
+      pre {
+        font-size: 12px;
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .container {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .navActions a {
+        font-size: 13px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      h2 {
+        font-size: 26px;
+      }
+
+      .eyebrow {
+        font-size: 10px;
+      }
+
+      pre {
+        font-size: 11px;
       }
     }
   </style>
@@ -208,112 +390,127 @@ router.get("/", (req, res) => {
 <body>
   <nav class="nav">
     <div class="brand">SandboxPay ID Docs</div>
-    <a href="${baseUrl}/api/health">Health Check</a>
+
+    <div class="navActions">
+      <a href="${safeBaseUrl}/api/health">Health Check</a>
+      <a href="${safeBaseUrl}">API Root</a>
+    </div>
   </nav>
 
   <main class="container">
     <section class="hero">
       <div>
-        <p class="eyebrow">API Documentation</p>
-        <h1>Mock Payment Gateway API untuk testing developer.</h1>
+        <span class="eyebrow">API Documentation</span>
+        <h1>Dokumentasi API untuk testing payment gateway.</h1>
         <p>
-          Gunakan dokumentasi ini untuk mencoba authentication, API key,
-          transaction API, payment simulator, dan webhook callback.
+          Gunakan SandboxPay ID untuk belajar membuat transaksi, API key,
+          payment simulator, webhook callback, dan webhook logs.
         </p>
       </div>
 
       <div class="card">
-        <h3>Base URL</h3>
-        <div class="baseUrl">
-          <code>${baseUrl}</code>
-        </div>
-        <p>
-          Semua endpoint production menggunakan base URL di atas.
+        <h2>Base URL</h2>
+        <div class="baseBox">${safeBaseUrl}</div>
+        <p style="margin-top:14px">
+          Semua endpoint production memakai base URL ini.
         </p>
       </div>
     </section>
 
     <div class="notice">
-      SandboxPay ID hanya untuk edukasi dan testing. Sistem ini tidak memproses
-      uang asli, tidak terhubung ke bank, e-wallet, QRIS, atau payment gateway resmi.
+      SandboxPay ID hanya untuk edukasi dan testing. Tidak memproses uang asli,
+      tidak terhubung ke bank, e-wallet, QRIS, atau payment gateway resmi.
     </div>
 
-    <section class="grid">
-      <div class="card">
-        <h3>Authentication</h3>
-        <p>
-          Register dan login menghasilkan JWT token untuk akses dashboard API key.
-        </p>
+    <section class="featureGrid">
+      <div class="feature">
+        <strong>Auth</strong>
+        <span>Register, login, dan profile developer dengan JWT.</span>
       </div>
 
-      <div class="card">
-        <h3>API Key</h3>
-        <p>
-          Secret API key dipakai sebagai Bearer Token untuk endpoint transaksi.
-        </p>
+      <div class="feature">
+        <strong>API Key</strong>
+        <span>Generate secret key untuk mengakses transaction API.</span>
       </div>
 
-      <div class="card">
-        <h3>Transaction</h3>
-        <p>
-          Buat transaksi sandbox dan dapatkan payment URL untuk simulasi pembayaran.
-        </p>
+      <div class="feature">
+        <strong>Transaction</strong>
+        <span>Buat transaksi sandbox dan dapatkan payment URL.</span>
       </div>
 
-      <div class="card">
-        <h3>Webhook</h3>
-        <p>
-          Setelah status pembayaran berubah, backend mengirim callback ke callback_url.
-        </p>
+      <div class="feature">
+        <strong>Webhook</strong>
+        <span>Terima callback dan pantau delivery logs.</span>
       </div>
     </section>
 
     <section class="card endpoint">
       <h2>Auth</h2>
 
-      <h3><span class="method">POST</span> /api/auth/register</h3>
-      <pre>curl -X POST ${baseUrl}/api/auth/register \\
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/auth/register</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/auth/register \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "Andi Developer",
     "email": "andi@example.com",
     "password": "password123"
-  }'</pre>
+  }'</pre></div>
 
-      <h3><span class="method">POST</span> /api/auth/login</h3>
-      <pre>curl -X POST ${baseUrl}/api/auth/login \\
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/auth/login</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/auth/login \\
   -H "Content-Type: application/json" \\
   -d '{
     "email": "andi@example.com",
     "password": "password123"
-  }'</pre>
+  }'</pre></div>
 
-      <h3><span class="method">GET</span> /api/auth/me</h3>
-      <pre>curl ${baseUrl}/api/auth/me \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/api/auth/me</h3>
+      </div>
+      <div class="codeWrap"><pre>curl ${safeBaseUrl}/api/auth/me \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
     </section>
 
     <section class="card endpoint">
       <h2>API Key</h2>
 
-      <h3><span class="method">GET</span> /api/keys</h3>
-      <pre>curl ${baseUrl}/api/keys \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/api/keys</h3>
+      </div>
+      <div class="codeWrap"><pre>curl ${safeBaseUrl}/api/keys \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
 
-      <h3><span class="method">POST</span> /api/keys/generate</h3>
-      <pre>curl -X POST ${baseUrl}/api/keys/generate \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/keys/generate</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/keys/generate \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
 
-      <h3><span class="method">POST</span> /api/keys/reset</h3>
-      <pre>curl -X POST ${baseUrl}/api/keys/reset \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/keys/reset</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/keys/reset \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
     </section>
 
     <section class="card endpoint">
       <h2>Transactions</h2>
 
-      <h3><span class="method">POST</span> /api/v1/transactions</h3>
-      <pre>curl -X POST ${baseUrl}/api/v1/transactions \\
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/v1/transactions</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/v1/transactions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer YOUR_SECRET_API_KEY" \\
   -d '{
@@ -322,52 +519,70 @@ router.get("/", (req, res) => {
     "customer_name": "Andi",
     "customer_email": "andi@example.com",
     "payment_method": "MOCK_EWALLET",
-    "callback_url": "${baseUrl}/webhook-test/receive"
-  }'</pre>
+    "callback_url": "${safeBaseUrl}/webhook-test/receive"
+  }'</pre></div>
 
-      <h3><span class="method">GET</span> /api/v1/transactions</h3>
-      <pre>curl ${baseUrl}/api/v1/transactions \\
-  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/api/v1/transactions</h3>
+      </div>
+      <div class="codeWrap"><pre>curl ${safeBaseUrl}/api/v1/transactions \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre></div>
 
-      <h3><span class="method">GET</span> /api/v1/transactions/:transactionId</h3>
-      <pre>curl ${baseUrl}/api/v1/transactions/trx_xxxxx \\
-  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/api/v1/transactions/:transactionId</h3>
+      </div>
+      <div class="codeWrap"><pre>curl ${safeBaseUrl}/api/v1/transactions/trx_xxxxx \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre></div>
 
-      <h3><span class="method">POST</span> /api/v1/transactions/:transactionId/cancel</h3>
-      <pre>curl -X POST ${baseUrl}/api/v1/transactions/trx_xxxxx/cancel \\
-  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre>
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/v1/transactions/:transactionId/cancel</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/v1/transactions/trx_xxxxx/cancel \\
+  -H "Authorization: Bearer YOUR_SECRET_API_KEY"</pre></div>
     </section>
 
     <section class="card endpoint">
       <h2>Payment Simulator</h2>
 
-      <h3><span class="method">GET</span> /pay/:transactionId</h3>
-      <pre>${baseUrl}/pay/trx_xxxxx</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/pay/:transactionId</h3>
+      </div>
+      <div class="codeWrap"><pre>${safeBaseUrl}/pay/trx_xxxxx</pre></div>
 
-      <p>
-        Buka payment URL dari response create transaction, lalu pilih status:
-        success, failed, pending, atau expired.
+      <p style="margin-top:14px">
+        Buka payment URL dari response create transaction, lalu pilih status
+        pembayaran success, failed, pending, atau expired.
       </p>
     </section>
 
     <section class="card endpoint">
       <h2>Webhook Logs</h2>
 
-      <h3><span class="method">GET</span> /api/webhook-logs</h3>
-      <pre>curl ${baseUrl}/api/webhook-logs \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">GET</span>
+        <h3>/api/webhook-logs</h3>
+      </div>
+      <div class="codeWrap"><pre>curl ${safeBaseUrl}/api/webhook-logs \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
 
-      <h3><span class="method">POST</span> /api/webhook-logs/:id/retry</h3>
-      <pre>curl -X POST ${baseUrl}/api/webhook-logs/WEBHOOK_LOG_ID/retry \\
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre>
+      <div class="endpointTitle">
+        <span class="method">POST</span>
+        <h3>/api/webhook-logs/:id/retry</h3>
+      </div>
+      <div class="codeWrap"><pre>curl -X POST ${safeBaseUrl}/api/webhook-logs/WEBHOOK_LOG_ID/retry \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"</pre></div>
     </section>
 
     <section class="card endpoint">
       <h2>Webhook Payload Example</h2>
 
-      <span class="success">payment.success</span>
+      <span class="payloadBadge">payment.success</span>
 
-      <pre>{
+      <div class="codeWrap"><pre>{
   "event": "payment.success",
   "transaction_id": "trx_xxxxx",
   "order_id": "ORDER-001",
@@ -380,13 +595,13 @@ router.get("/", (req, res) => {
   "expired_at": "2026-06-14T10:30:00.000Z",
   "created_at": "2026-06-14T09:59:00.000Z",
   "updated_at": "2026-06-14T10:00:00.000Z"
-}</pre>
+}</pre></div>
     </section>
 
-    <section class="card">
+    <section class="card endpoint">
       <h2>JavaScript Fetch Example</h2>
 
-      <pre>const response = await fetch("${baseUrl}/api/v1/transactions", {
+      <div class="codeWrap"><pre>const response = await fetch("${safeBaseUrl}/api/v1/transactions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -398,14 +613,18 @@ router.get("/", (req, res) => {
     customer_name: "Andi",
     customer_email: "andi@example.com",
     payment_method: "MOCK_EWALLET",
-    callback_url: "${baseUrl}/webhook-test/receive"
+    callback_url: "${safeBaseUrl}/webhook-test/receive"
   })
 });
 
 const data = await response.json();
-console.log(data);</pre>
+console.log(data);</pre></div>
     </section>
   </main>
+
+  <footer class="footer">
+    SandboxPay ID dibuat untuk edukasi, latihan integrasi API, dan portfolio developer.
+  </footer>
 </body>
 </html>`);
 });

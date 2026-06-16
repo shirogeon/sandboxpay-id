@@ -72,147 +72,185 @@ function Navbar({ user, onLogout }) {
 function Landing() {
   return (
     <main>
-      <section className="heroSection">
-        <div className="container hero">
-          <div className="heroContent">
-            <p className="eyebrow">Payment Gateway Sandbox untuk Developer</p>
+      <section className="publicHero">
+        <div className="container publicHeroGrid">
+          <div className="publicHeroText">
+            <div className="productBadge">Sandbox Payment Gateway API</div>
 
-            <h1>Belajar integrasi pembayaran tanpa KYC dan tanpa uang asli.</h1>
+            <h1>Mock payment gateway untuk latihan integrasi pembayaran.</h1>
 
-            <p className="heroText">
-              SandboxPay ID membantu developer belajar alur payment gateway:
-              membuat transaksi, membuka payment simulator, menerima webhook,
-              melihat logs, dan mencoba API key seperti integrasi payment
-              gateway sungguhan.
+            <p>
+              SandboxPay ID membantu developer belajar membuat transaksi,
+              payment URL, API key, payment simulator, webhook callback, dan
+              webhook logs tanpa memproses uang asli.
             </p>
 
-            <div className="actions">
+            <div className="publicActions">
               <Link to="/register" className="button primary">
-                Mulai Gratis
+                Mulai Testing
               </Link>
 
               <a
                 href={`${API_BASE_URL}/docs`}
                 target="_blank"
                 rel="noreferrer"
-                className="button secondary"
+                className="button ghost"
               >
-                Lihat Dokumentasi
+                Buka Dokumentasi
               </a>
             </div>
 
-            <div className="heroNote">
-              Tidak memproses uang asli. Dibuat untuk edukasi, testing, dan
-              portfolio developer.
+            <div className="publicMiniStats">
+              <div>
+                <strong>API Key</strong>
+                <span>Bearer token style</span>
+              </div>
+              <div>
+                <strong>Webhook</strong>
+                <span>Callback simulator</span>
+              </div>
+              <div>
+                <strong>No Real Money</strong>
+                <span>Aman untuk belajar</span>
+              </div>
             </div>
           </div>
 
-          <div className="heroPreview">
-            <div className="previewHeader">
-              <span className="dot red"></span>
-              <span className="dot yellow"></span>
-              <span className="dot green"></span>
-              <strong>Webhook Payload</strong>
+          <div className="terminalPreview">
+            <div className="terminalTop">
+              <span></span>
+              <span></span>
+              <span></span>
+              <p>Create Transaction</p>
             </div>
 
-            <pre>{`{
-  "event": "payment.success",
-  "transaction_id": "trx_8f2bb845...",
+            <pre>{`POST /api/v1/transactions
+
+{
   "order_id": "ORDER-001",
   "amount": 50000,
-  "status": "SUCCESS",
-  "payment_method": "MOCK_EWALLET"
+  "payment_method": "MOCK_EWALLET",
+  "callback_url": "${API_BASE_URL}/webhook-test/receive"
 }`}</pre>
 
-            <div className="previewFooter">
-              <StatusBadge status="SUCCESS" />
-              <span>Response 200</span>
+            <div className="terminalResult">
+              <span className="badge success">SUCCESS</span>
+              <p>payment_url generated</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="container section">
-        <div className="sectionIntro">
-          <p className="eyebrow">Core Features</p>
-          <h2>Fitur yang dibutuhkan untuk belajar integrasi pembayaran.</h2>
-        </div>
-
-        <div className="featureGrid">
-          <div className="featureCard">
-            <span className="featureNumber">01</span>
-            <h3>Developer Auth</h3>
-            <p>
-              Register, login, dan kelola akun developer menggunakan JWT
-              authentication.
-            </p>
-          </div>
-
-          <div className="featureCard">
-            <span className="featureNumber">02</span>
-            <h3>API Key</h3>
-            <p>
-              Generate secret key untuk mengakses endpoint transaksi sandbox.
-            </p>
-          </div>
-
-          <div className="featureCard">
-            <span className="featureNumber">03</span>
-            <h3>Transaction API</h3>
-            <p>
-              Buat transaksi, dapatkan payment URL, dan cek riwayat transaksi.
-            </p>
-          </div>
-
-          <div className="featureCard">
-            <span className="featureNumber">04</span>
-            <h3>Webhook Logs</h3>
-            <p>
-              Pantau callback webhook, response status, attempt, dan retry
-              delivery.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="container section">
-        <div className="workflow">
-          <div>
-            <p className="eyebrow">How It Works</p>
-            <h2>Alur testing dibuat mirip payment gateway asli.</h2>
-          </div>
-
-          <div className="workflowSteps">
-            <div className="workflowItem">
-              <strong>1. Generate API Key</strong>
-              <span>Developer mendapatkan secret key dari dashboard.</span>
-            </div>
-
-            <div className="workflowItem">
-              <strong>2. Create Transaction</strong>
-              <span>API membuat transaksi dan mengembalikan payment URL.</span>
-            </div>
-
-            <div className="workflowItem">
-              <strong>3. Simulate Payment</strong>
-              <span>User memilih status pembayaran di payment simulator.</span>
-            </div>
-
-            <div className="workflowItem">
-              <strong>4. Receive Webhook</strong>
-              <span>Backend mengirim callback ke URL developer.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="container ctaSection">
-        <div>
-          <p className="eyebrow">Ready to Test</p>
-          <h2>Mulai testing integrasi pembayaran sekarang.</h2>
+      <section className="container publicSection">
+        <div className="publicSectionHeader">
+          <span>Kenapa SandboxPay ID?</span>
+          <h2>Dibuat untuk developer yang ingin belajar flow payment gateway.</h2>
           <p>
-            Buat akun developer, generate API key, lalu coba create transaction
-            pertama kamu.
+            Portal payment resmi biasanya butuh verifikasi bisnis. SandboxPay ID
+            memberi environment aman untuk memahami alur teknisnya dulu.
+          </p>
+        </div>
+
+        <div className="publicFeatureGrid">
+          <div className="publicFeatureCard">
+            <div className="featureIcon">01</div>
+            <h3>Developer Account</h3>
+            <p>Register dan login untuk mengelola API key dan transaksi.</p>
+          </div>
+
+          <div className="publicFeatureCard">
+            <div className="featureIcon">02</div>
+            <h3>API Key Management</h3>
+            <p>Generate secret key untuk akses endpoint transaksi sandbox.</p>
+          </div>
+
+          <div className="publicFeatureCard">
+            <div className="featureIcon">03</div>
+            <h3>Payment Simulator</h3>
+            <p>Simulasikan pembayaran success, failed, pending, atau expired.</p>
+          </div>
+
+          <div className="publicFeatureCard">
+            <div className="featureIcon">04</div>
+            <h3>Webhook Logs</h3>
+            <p>Lihat callback URL, response status, attempt, dan retry log.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="container publicSection">
+        <div className="apiFlowCard">
+          <div>
+            <span className="sectionTag">Integration Flow</span>
+            <h2>Flow testing yang mirip payment gateway asli.</h2>
+          </div>
+
+          <div className="apiFlowSteps">
+            <div>
+              <strong>1</strong>
+              <p>Developer generate API key dari dashboard.</p>
+            </div>
+
+            <div>
+              <strong>2</strong>
+              <p>Client membuat transaksi lewat endpoint API.</p>
+            </div>
+
+            <div>
+              <strong>3</strong>
+              <p>User membuka payment simulator dari payment URL.</p>
+            </div>
+
+            <div>
+              <strong>4</strong>
+              <p>Sistem mengirim webhook ke callback URL developer.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container publicSection">
+        <div className="endpointShowcase">
+          <div className="endpointText">
+            <span className="sectionTag">API Preview</span>
+            <h2>Endpoint yang siap dicoba dari dokumentasi.</h2>
+            <p>
+              Gunakan dashboard untuk generate API key, lalu pakai endpoint ini
+              dari aplikasi, Postman, atau terminal.
+            </p>
+          </div>
+
+          <div className="endpointList">
+            <div>
+              <span>POST</span>
+              <code>/api/auth/register</code>
+            </div>
+
+            <div>
+              <span>POST</span>
+              <code>/api/keys/generate</code>
+            </div>
+
+            <div>
+              <span>POST</span>
+              <code>/api/v1/transactions</code>
+            </div>
+
+            <div>
+              <span>GET</span>
+              <code>/api/webhook-logs</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container publicCta">
+        <div>
+          <span className="sectionTag">Ready</span>
+          <h2>Mulai buat transaksi sandbox pertama kamu.</h2>
+          <p>
+            Cocok untuk latihan backend, frontend integration, webhook handling,
+            dan portfolio fullstack.
           </p>
         </div>
 

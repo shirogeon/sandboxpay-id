@@ -763,433 +763,467 @@ tr:hover td {
 }
 
 /* =========================================================
-   RESPONSIVE MOBILE POLISH
-   Fokus: navbar, hero, form, cards, table, spacing mobile
+   PUBLIC UI OVERHAUL + MOBILE FIX
 ========================================================= */
 
-@media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-  }
+.publicHero {
+  padding: 80px 0 56px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.12), transparent 32rem),
+    radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.16), transparent 28rem);
+}
 
+.publicHeroGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 42px;
+  align-items: center;
+}
+
+.publicHeroText h1 {
+  max-width: 760px;
+}
+
+.publicHeroText p {
+  max-width: 680px;
+  font-size: 17px;
+}
+
+.productBadge,
+.sectionTag {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  background: #ede9fe;
+  color: #6d28d9;
+  border: 1px solid #ddd6fe;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.publicActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.publicMiniStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.publicMiniStats div {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.publicMiniStats strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.publicMiniStats span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.terminalPreview {
+  background: #251f2f;
+  color: white;
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 30px 70px rgba(37, 31, 47, 0.24);
+  overflow: hidden;
+}
+
+.terminalTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.terminalTop span {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+}
+
+.terminalTop span:nth-child(1) {
+  background: #fb7185;
+}
+
+.terminalTop span:nth-child(2) {
+  background: #facc15;
+}
+
+.terminalTop span:nth-child(3) {
+  background: #84cc16;
+}
+
+.terminalTop p {
+  color: #d8d1e3;
+  margin: 0 0 0 auto;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.terminalPreview pre {
+  background: #17121f;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 20px;
+  overflow-x: auto;
+  color: #f8f3ea;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.terminalResult {
+  margin-top: 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.terminalResult p {
+  color: #e7dfef;
+  margin: 0;
+  font-weight: 800;
+}
+
+.publicSection {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.publicSectionHeader {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.publicSectionHeader span {
+  color: var(--primary);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+.publicFeatureGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.publicFeatureCard {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  min-height: 220px;
+  box-shadow: var(--shadow);
+  transition: 0.18s ease;
+}
+
+.publicFeatureCard:hover {
+  transform: translateY(-3px);
+  border-color: #c4b5fd;
+}
+
+.featureIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7c3aed, #f59e0b);
+  color: white;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
+
+.apiFlowCard,
+.endpointShowcase,
+.publicCta {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.apiFlowCard {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 26px;
+}
+
+.apiFlowSteps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.apiFlowSteps div {
+  background: #fbf8f1;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.apiFlowSteps strong {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #ede9fe;
+  color: #6d28d9;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.apiFlowSteps p {
+  margin: 0;
+}
+
+.endpointShowcase {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.endpointList {
+  display: grid;
+  gap: 12px;
+}
+
+.endpointList div {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 12px;
+  align-items: center;
+  background: #251f2f;
+  color: white;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.endpointList span {
+  background: #ede9fe;
+  color: #6d28d9;
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-weight: 900;
+  text-align: center;
+  font-size: 12px;
+}
+
+.endpointList code {
+  color: #f8f3ea;
+  word-break: break-word;
+}
+
+.publicCta {
+  margin-top: 44px;
+  margin-bottom: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* dashboard mobile refinement */
+@media (max-width: 768px) {
   .navbar {
-    min-height: auto;
     padding: 14px 16px;
-    gap: 14px;
-    align-items: stretch;
   }
 
   .brand {
-    width: 100%;
-    font-size: 19px;
-    justify-content: flex-start;
+    font-size: 22px;
   }
 
   .brandMark {
-    width: 31px;
-    height: 31px;
-    border-radius: 10px;
-    font-size: 14px;
+    width: 38px;
+    height: 38px;
   }
 
   .navLinks {
-    width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
-
-  .navLinks::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
   }
 
   .navLinks a,
   .navButton {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    padding: 9px 12px;
+    width: 100%;
+    text-align: center;
+    padding: 10px 8px;
     font-size: 13px;
   }
 
-  .container {
-    width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
+  .publicHero {
+    padding: 42px 0 34px;
   }
 
-  .heroSection {
-    padding: 38px 0 32px;
-  }
-
-  .hero {
+  .publicHeroGrid,
+  .apiFlowCard,
+  .endpointShowcase {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 20px;
   }
 
-  .heroContent {
-    max-width: 100%;
-  }
-
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    line-height: 1.5;
-  }
-
-  h1 {
-    font-size: 40px;
-    line-height: 1;
+  .publicHeroText h1 {
+    font-size: 38px;
+    line-height: 1.03;
     letter-spacing: -0.055em;
-    margin: 10px 0 14px;
   }
 
-  h2 {
-    font-size: 30px;
-    line-height: 1.08;
-  }
-
-  h3 {
-    font-size: 18px;
-  }
-
-  p,
-  .heroText {
+  .publicHeroText p {
     font-size: 15px;
-    line-height: 1.65;
   }
 
-  .heroNote {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .actions {
-    width: 100%;
+  .publicActions {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .publicMiniStats {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 
-  .button {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 14px;
-  }
-
-  .heroPreview {
+  .terminalPreview {
     border-radius: 22px;
     padding: 18px;
   }
 
-  .previewHeader {
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .previewHeader strong {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 8px;
-  }
-
-  .heroPreview pre {
+  .terminalPreview pre {
     font-size: 12px;
     padding: 16px;
-    border-radius: 14px;
   }
 
-  .previewFooter {
-    gap: 10px;
-    align-items: flex-start;
+  .terminalResult {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
-  .section {
-    padding-top: 28px;
-    padding-bottom: 28px;
+  .publicSection {
+    padding-top: 34px;
+    padding-bottom: 34px;
   }
 
-  .sectionIntro {
-    margin-bottom: 16px;
-  }
-
-  .featureGrid,
-  .gridTwo,
-  .workflow,
-  .statsGrid {
+  .publicFeatureGrid,
+  .apiFlowSteps {
     grid-template-columns: 1fr;
-    gap: 14px;
   }
 
-  .featureCard,
-  .panel,
-  .authCard,
-  .statCard,
-  .ctaSection,
-  .workflow {
-    border-radius: 20px;
+  .publicFeatureCard,
+  .apiFlowCard,
+  .endpointShowcase,
+  .publicCta {
+    border-radius: 22px;
     padding: 20px;
   }
 
-  .featureCard {
+  .publicFeatureCard {
     min-height: auto;
   }
 
-  .featureNumber {
-    margin-bottom: 12px;
-  }
-
-  .workflowSteps {
+  .endpointList div {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 
-  .workflowItem {
-    padding: 14px;
-    border-radius: 16px;
+  .endpointList span {
+    width: fit-content;
   }
 
-  .ctaSection {
-    margin-top: 28px;
-    margin-bottom: 42px;
-    align-items: stretch;
-  }
-
-  .pageContainer {
-    padding-top: 34px;
-    padding-bottom: 52px;
-  }
-
-  .pageHeader {
-    gap: 14px;
-    margin-bottom: 18px;
+  .publicCta {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-bottom: 46px;
   }
 
   .pageHeader h1 {
-    font-size: 38px;
-  }
-
-  .statCard strong {
-    font-size: 28px;
-  }
-
-  .authPage {
-    min-height: calc(100vh - 116px);
-    padding: 24px 16px;
-    align-items: flex-start;
-  }
-
-  .authCard {
-    max-width: 100%;
-  }
-
-  .authCard h1 {
-    font-size: 36px;
-  }
-
-  label {
-    font-size: 13px;
-    margin-top: 13px;
-  }
-
-  input,
-  select {
-    font-size: 14px;
-    padding: 12px 13px;
-    border-radius: 13px;
-  }
-
-  .toolbar {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .sectionHeader {
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .sectionHeader h2 {
-    font-size: 26px;
-  }
-
-  .infoRow {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 12px 0;
-  }
-
-  .copyRow {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .secretBox code,
-  .statCard code {
-    display: block;
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .message,
-  .successMessage {
-    font-size: 14px;
-    padding: 13px;
-    border-radius: 14px;
-  }
-
-  .emptyState {
-    padding: 22px 16px;
-    border-radius: 16px;
-  }
-
-  .tableWrap {
-    width: 100%;
-    overflow-x: auto;
-    border-radius: 16px;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
-    min-width: 760px;
-  }
-
-  th,
-  td {
-    padding: 12px;
-    font-size: 13px;
-  }
-
-  th {
-    font-size: 11px;
-  }
-
-  .urlCell {
-    max-width: 240px;
-  }
-
-  .badge {
-    font-size: 11px;
-    padding: 5px 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .navbar {
-    padding: 12px 14px;
-  }
-
-  .brand {
-    font-size: 18px;
-  }
-
-  .navLinks a,
-  .navButton {
-    padding: 8px 11px;
-    font-size: 12px;
-  }
-
-  .container {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
-  .heroSection {
-    padding-top: 30px;
-  }
-
-  h1 {
     font-size: 34px;
-    line-height: 1.03;
   }
 
-  h2 {
-    font-size: 26px;
+  .pageHeader p {
+    font-size: 15px;
   }
 
-  p,
-  .heroText {
-    font-size: 14px;
+  .statsGrid {
+    grid-template-columns: 1fr;
   }
 
-  .heroPreview,
-  .featureCard,
-  .panel,
-  .authCard,
-  .statCard,
-  .ctaSection,
-  .workflow {
-    padding: 18px;
-    border-radius: 18px;
-  }
-
-  .heroPreview pre {
-    font-size: 11px;
-    padding: 14px;
-  }
-
-  .pageHeader h1 {
-    font-size: 32px;
-  }
-
-  .authCard h1 {
-    font-size: 32px;
-  }
-
-  .button {
-    padding: 11px 14px;
-    font-size: 13px;
+  .statCard {
+    min-height: auto;
   }
 
   .statCard strong {
-    font-size: 26px;
-  }
-
-  .tableWrap {
-    margin-left: -2px;
-    margin-right: -2px;
-  }
-
-  table {
-    min-width: 700px;
-  }
-}
-
-@media (max-width: 380px) {
-  h1 {
     font-size: 30px;
   }
+}
 
-  .pageHeader h1,
-  .authCard h1 {
-    font-size: 29px;
+@media (max-width: 430px) {
+  .navbar {
+    gap: 12px;
   }
 
   .brand {
-    font-size: 17px;
+    font-size: 20px;
   }
 
   .brandMark {
-    width: 29px;
-    height: 29px;
+    width: 35px;
+    height: 35px;
+  }
+
+  .navLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .navLinks a,
   .navButton {
+    font-size: 12px;
+    padding: 10px 8px;
+  }
+
+  .publicHeroText h1 {
+    font-size: 32px;
+  }
+
+  .publicSectionHeader h2,
+  .apiFlowCard h2,
+  .endpointShowcase h2,
+  .publicCta h2 {
+    font-size: 27px;
+  }
+
+  .terminalPreview pre {
     font-size: 11px;
-    padding: 8px 10px;
   }
 
-  .heroPreview pre {
-    font-size: 10.5px;
-  }
-
-  table {
-    min-width: 660px;
+  .pageHeader h1 {
+    font-size: 31px;
   }
 }

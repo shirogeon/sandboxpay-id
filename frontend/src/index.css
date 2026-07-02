@@ -1109,3 +1109,240 @@ tr:last-child td {
     min-width: 690px;
   }
 }
+
+/* =========================================================
+   FINAL LANDING MOBILE FIX
+   Fix horizontal overflow, headline spacing, code block width
+========================================================= */
+
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.marketingPage {
+  max-width: 1120px;
+  overflow-x: hidden;
+}
+
+/* desktop tetap aman */
+.heroCopy h1 {
+  letter-spacing: -0.055em;
+}
+
+/* code block jangan bikin halaman melebar */
+.heroConsole,
+.codePanel {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.heroConsole pre,
+.codePanel pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* mobile landing polish */
+@media (max-width: 860px) {
+  .marketingPage {
+    width: min(100% - 28px, 1120px);
+  }
+
+  .heroSection {
+    padding: 30px 0 28px;
+    gap: 20px;
+  }
+
+  .heroLabel {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+  }
+
+  .heroLabel img {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+
+  .heroLabel span {
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    line-height: 1.35;
+  }
+
+  .heroCopy h1 {
+    font-size: 34px;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    max-width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .heroCopy p {
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 100%;
+  }
+
+  .heroButtons {
+    margin-top: 22px;
+    gap: 9px;
+  }
+
+  .heroNotes {
+    margin-top: 14px;
+    gap: 8px;
+  }
+
+  .heroNotes span {
+    font-size: 12px;
+    padding: 7px 9px;
+  }
+
+  .heroConsole {
+    padding: 14px;
+    border-radius: 18px;
+    box-shadow: none;
+  }
+
+  .consoleTop {
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .consoleTop code {
+    font-size: 13px;
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .heroConsole pre,
+  .codePanel pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .consoleStatus {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .featureSection,
+  .splitInfo,
+  .codeSection,
+  .faqBlock,
+  .finalCta {
+    padding: 28px 0;
+  }
+
+  .sectionHead {
+    margin-bottom: 16px;
+  }
+
+  .sectionHead span,
+  .kicker,
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .sectionHead h2,
+  .splitInfo h2,
+  .finalCta h2 {
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+
+  .sectionHead p,
+  .splitInfo p,
+  .finalCta p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .featureRows {
+    border-radius: 16px;
+  }
+
+  .featureRows div {
+    padding: 16px;
+    gap: 6px;
+  }
+
+  .featureRows strong {
+    font-size: 18px;
+  }
+
+  .featureRows p {
+    font-size: 15px;
+  }
+
+  .flowStack div {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .faqItem summary {
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .faqItem p {
+    padding: 0 16px 16px;
+    font-size: 14px;
+  }
+
+  .finalCta {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 430px) {
+  .marketingPage,
+  .pageContainer,
+  .authPage,
+  .siteFooter {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .heroSection {
+    padding-top: 26px;
+  }
+
+  .heroCopy h1 {
+    font-size: 31px;
+    letter-spacing: -0.028em;
+  }
+
+  .heroCopy p {
+    font-size: 14.5px;
+  }
+
+  .button {
+    min-height: 48px;
+  }
+
+  .heroConsole pre,
+  .codePanel pre {
+    font-size: 11.5px;
+  }
+
+  .sectionHead h2,
+  .splitInfo h2,
+  .finalCta h2 {
+    font-size: 26px;
+  }
+}

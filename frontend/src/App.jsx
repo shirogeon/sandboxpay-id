@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import {
   API_BASE_URL,
@@ -25,14 +25,12 @@ function formatRupiah(value) {
 
 function copyText(value, callback) {
   if (!value) return;
-
   navigator.clipboard.writeText(value);
   callback?.();
 }
 
 function StatusBadge({ status }) {
   const cleanStatus = String(status || "-").toLowerCase();
-
   return <span className={`badge ${cleanStatus}`}>{status || "-"}</span>;
 }
 
@@ -72,6 +70,103 @@ function Navbar({ user, onLogout }) {
         )}
       </div>
     </nav>
+  );
+}
+
+function FAQ() {
+  const faqs = [
+    {
+      question: "Apakah SandboxPay ID memproses uang asli?",
+      answer:
+        "Tidak. SandboxPay ID hanya mock payment gateway untuk belajar integrasi transaksi, payment simulator, dan webhook callback.",
+    },
+    {
+      question: "Apakah perlu KYC atau verifikasi bisnis?",
+      answer:
+        "Tidak perlu. Karena ini sandbox untuk testing, developer bisa langsung register, generate API key, dan mencoba transaksi.",
+    },
+    {
+      question: "Bisa dipakai untuk bot Discord atau e-commerce?",
+      answer:
+        "Bisa. SandboxPay ID cocok untuk testing auto order Discord bot, checkout e-commerce, dashboard toko digital, dan simulasi webhook payment gateway.",
+    },
+    {
+      question: "Apa bedanya dengan payment gateway asli?",
+      answer:
+        "Payment gateway asli memproses uang sungguhan dan biasanya butuh verifikasi bisnis. SandboxPay ID hanya meniru flow teknisnya untuk kebutuhan development.",
+    },
+    {
+      question: "Webhook callback URL harus pakai apa?",
+      answer:
+        "Untuk production, gunakan URL publik seperti endpoint backend Vercel, Railway, Render, atau ngrok. Jangan gunakan localhost jika aplikasi sudah online.",
+    },
+    {
+      question: "Apakah API key ini aman dipakai untuk pembayaran asli?",
+      answer:
+        "Tidak. API key SandboxPay ID hanya untuk mock transaction. Untuk pembayaran asli tetap gunakan provider resmi seperti Midtrans, Xendit, Tripay, Duitku, atau sejenisnya.",
+    },
+  ];
+
+  return (
+    <section className="container faqSection">
+      <div className="faqIntro">
+        <span className="sectionTag">FAQ</span>
+        <h2>Pertanyaan yang sering muncul.</h2>
+        <p>
+          Beberapa hal penting sebelum memakai SandboxPay ID untuk testing
+          integrasi pembayaran.
+        </p>
+      </div>
+
+      <div className="faqList">
+        {faqs.map((item) => (
+          <details className="faqItem" key={item.question}>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="siteFooter">
+      <div className="container footerInner">
+        <div>
+          <div className="footerBrand">
+            <img
+              src="/brand/sandboxpay-icon.png"
+              alt="SandboxPay ID icon"
+              className="footerLogo"
+            />
+            <strong>SandboxPay ID</strong>
+          </div>
+
+          <p>
+            Mock payment gateway API untuk belajar integrasi transaksi, payment
+            simulator, API key, dan webhook callback.
+          </p>
+        </div>
+
+        <div className="footerLinks">
+          <a href={`${API_BASE_URL}/docs`} target="_blank" rel="noreferrer">
+            Documentation
+          </a>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/transactions">Transactions</Link>
+          <Link to="/webhooks">Webhook Logs</Link>
+        </div>
+      </div>
+
+      <div className="container footerBottom">
+        <span>© {year} SandboxPay ID. All rights reserved.</span>
+        <span>Built for development, testing, and education only.</span>
+      </div>
+    </footer>
   );
 }
 
@@ -264,6 +359,8 @@ function Landing() {
           </div>
         </div>
       </section>
+
+      <FAQ />
 
       <section className="container publicCta">
         <div>
@@ -1218,6 +1315,8 @@ function App() {
           }
         />
       </Routes>
+
+      <Footer />
     </>
   );
 }

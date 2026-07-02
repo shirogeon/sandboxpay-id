@@ -35,39 +35,80 @@ function StatusBadge({ status }) {
 }
 
 function Navbar({ user, onLogout }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
+  function handleLogout() {
+    closeMenu();
+    onLogout();
+  }
+
   return (
     <nav className="navbar">
-      <Link to="/" className="brand">
-        <img
-          src="/brand/sandboxpay-icon.png"
-          alt="SandboxPay ID icon"
-          className="brandLogo"
-        />
-        <span>SandboxPay ID</span>
-      </Link>
+      <div className="navInner">
+        <Link to="/" className="brand" onClick={closeMenu}>
+          <img
+            src="/brand/sandboxpay-icon.png"
+            alt="SandboxPay ID icon"
+            className="brandLogo"
+          />
+          <span>SandboxPay ID</span>
+        </Link>
 
-      <div className="navLinks">
-        <a href={`${API_BASE_URL}/docs`} target="_blank" rel="noreferrer">
-          Docs
-        </a>
+        <button
+          type="button"
+          className={`hamburger ${menuOpen ? "isOpen" : ""}`}
+          onClick={() => setMenuOpen((value) => !value)}
+          aria-label="Toggle navigation menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-        {user ? (
-          <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/transactions">Transactions</Link>
-            <Link to="/webhooks">Webhook Logs</Link>
-            <button onClick={onLogout} className="navButton">
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register" className="navPrimary">
-              Register
-            </Link>
-          </>
-        )}
+        <div className={`navLinks ${menuOpen ? "showMenu" : ""}`}>
+          <a
+            href={`${API_BASE_URL}/docs`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={closeMenu}
+          >
+            Docs
+          </a>
+
+          {user ? (
+            <>
+              <Link to="/dashboard" onClick={closeMenu}>
+                Dashboard
+              </Link>
+
+              <Link to="/transactions" onClick={closeMenu}>
+                Transactions
+              </Link>
+
+              <Link to="/webhooks" onClick={closeMenu}>
+                Webhook Logs
+              </Link>
+
+              <button onClick={handleLogout} className="navButton">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={closeMenu}>
+                Login
+              </Link>
+
+              <Link to="/register" className="navPrimary" onClick={closeMenu}>
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
@@ -76,45 +117,40 @@ function Navbar({ user, onLogout }) {
 function FAQ() {
   const faqs = [
     {
-      question: "Apakah SandboxPay ID memproses uang asli?",
+      question: "Apakah ini memproses uang asli?",
       answer:
-        "Tidak. SandboxPay ID hanya mock payment gateway untuk belajar integrasi transaksi, payment simulator, dan webhook callback.",
+        "Tidak. SandboxPay ID hanya dipakai untuk simulasi transaksi, payment URL, dan webhook. Tidak ada saldo, QR, virtual account, atau uang asli yang diproses.",
     },
     {
       question: "Apakah perlu KYC atau verifikasi bisnis?",
       answer:
-        "Tidak perlu. Karena ini sandbox untuk testing, developer bisa langsung register, generate API key, dan mencoba transaksi.",
+        "Tidak perlu. Developer bisa langsung membuat akun, generate API key, lalu mencoba flow transaksi sandbox.",
     },
     {
       question: "Bisa dipakai untuk bot Discord atau e-commerce?",
       answer:
-        "Bisa. SandboxPay ID cocok untuk testing auto order Discord bot, checkout e-commerce, dashboard toko digital, dan simulasi webhook payment gateway.",
+        "Bisa. Flow-nya cocok untuk auto order Discord bot, checkout e-commerce, dashboard toko digital, dan testing webhook payment.",
     },
     {
-      question: "Apa bedanya dengan payment gateway asli?",
+      question: "Callback URL harus pakai apa?",
       answer:
-        "Payment gateway asli memproses uang sungguhan dan biasanya butuh verifikasi bisnis. SandboxPay ID hanya meniru flow teknisnya untuk kebutuhan development.",
+        "Gunakan URL publik dari backend kamu, misalnya Vercel, Railway, Render, VPS, atau ngrok. Jangan pakai localhost kalau aplikasi sudah online.",
     },
     {
-      question: "Webhook callback URL harus pakai apa?",
+      question: "Bisa dipakai untuk pembayaran asli?",
       answer:
-        "Untuk production, gunakan URL publik seperti endpoint backend Vercel, Railway, Render, atau ngrok. Jangan gunakan localhost jika aplikasi sudah online.",
-    },
-    {
-      question: "Apakah API key ini aman dipakai untuk pembayaran asli?",
-      answer:
-        "Tidak. API key SandboxPay ID hanya untuk mock transaction. Untuk pembayaran asli tetap gunakan provider resmi seperti Midtrans, Xendit, Tripay, Duitku, atau sejenisnya.",
+        "Tidak. Untuk pembayaran asli tetap pakai payment gateway resmi. SandboxPay ID hanya untuk development, testing, dan belajar integrasi.",
     },
   ];
 
   return (
-    <section className="container faqSection">
-      <div className="sectionTitle">
+    <section className="faqBlock">
+      <div className="sectionHead">
         <span>FAQ</span>
-        <h2>Pertanyaan yang sering muncul.</h2>
+        <h2>Hal yang sering ditanya.</h2>
         <p>
-          Beberapa hal penting sebelum memakai SandboxPay ID untuk testing
-          integrasi pembayaran.
+          Ringkas aja. Ini sandbox untuk testing flow, bukan payment gateway
+          live.
         </p>
       </div>
 
@@ -135,26 +171,21 @@ function Footer() {
 
   return (
     <footer className="siteFooter">
-      <div className="container footerInner">
+      <div className="footerMain">
         <div>
           <div className="footerBrand">
-            <img
-              src="/brand/sandboxpay-icon.png"
-              alt="SandboxPay ID icon"
-              className="footerLogo"
-            />
+            <img src="/brand/sandboxpay-icon.png" alt="SandboxPay ID icon" />
             <strong>SandboxPay ID</strong>
           </div>
-
           <p>
-            Mock payment gateway API untuk belajar integrasi transaksi, payment
-            simulator, API key, dan webhook callback.
+            Mock payment gateway API untuk testing transaksi, payment simulator,
+            API key, dan webhook callback.
           </p>
         </div>
 
         <div className="footerLinks">
           <a href={`${API_BASE_URL}/docs`} target="_blank" rel="noreferrer">
-            Documentation
+            Docs
           </a>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/transactions">Transactions</Link>
@@ -162,9 +193,9 @@ function Footer() {
         </div>
       </div>
 
-      <div className="container footerBottom">
+      <div className="footerBottom">
         <span>© {year} SandboxPay ID. All rights reserved.</span>
-        <span>Built for development, testing, and education only.</span>
+        <span>Development and testing only.</span>
       </div>
     </footer>
   );
@@ -173,31 +204,24 @@ function Footer() {
 function Landing() {
   return (
     <main className="marketingPage">
-      <section className="landingShell">
-        <div className="landingIntro">
-          <div className="brandStrip">
-            <img
-              src="/brand/sandboxpay-icon.png"
-              alt="SandboxPay ID icon"
-              className="brandStripIcon"
-            />
-
-            <div>
-              <strong>SandboxPay ID</strong>
-              <span>Mock payment gateway API</span>
-            </div>
+      <section className="heroSection">
+        <div className="heroCopy">
+          <div className="heroLabel">
+            <img src="/brand/sandboxpay-icon.png" alt="SandboxPay ID icon" />
+            <span>Mock Payment Gateway API</span>
           </div>
 
-          <h1>Payment sandbox for local testing.</h1>
+          <h1>Test payment flow tanpa uang asli.</h1>
 
-          <p className="leadText">
-            Create mock transactions, simulate payment status, and inspect
-            webhook delivery without touching real money.
+          <p>
+            Buat transaksi sandbox, buka payment simulator, lalu cek webhook
+            callback dari satu tempat. Cocok untuk bot Discord, e-commerce, dan
+            latihan backend.
           </p>
 
-          <div className="heroActions">
+          <div className="heroButtons">
             <Link to="/register" className="button primary">
-              Start Testing
+              Mulai Testing
             </Link>
 
             <a
@@ -206,19 +230,19 @@ function Landing() {
               rel="noreferrer"
               className="button ghost"
             >
-              Read Docs
+              Buka Docs
             </a>
           </div>
 
-          <div className="plainMeta">
+          <div className="heroNotes">
             <span>No KYC</span>
-            <span>No real payment</span>
+            <span>No real money</span>
             <span>Webhook ready</span>
           </div>
         </div>
 
-        <div className="apiConsole">
-          <div className="consoleHeader">
+        <div className="heroConsole">
+          <div className="consoleTop">
             <span>POST</span>
             <code>/api/v1/transactions</code>
           </div>
@@ -230,83 +254,86 @@ function Landing() {
   "callback_url": "${API_BASE_URL}/webhook-test/receive"
 }`}</pre>
 
-          <div className="consoleFooter">
-            <span className="statusDot"></span>
-            <p>Payment URL generated. Waiting for simulation.</p>
+          <div className="consoleStatus">
+            <span></span>
+            Payment URL generated
           </div>
         </div>
       </section>
 
-      <section className="container compactSection">
-        <div className="sectionTitle">
-          <span>What you can test</span>
-          <h2>Everything you need for payment flow practice.</h2>
-        </div>
-
-        <div className="simpleGrid">
-          <article>
-            <h3>API Key</h3>
-            <p>Generate sandbox keys and use them as Bearer token.</p>
-          </article>
-
-          <article>
-            <h3>Transactions</h3>
-            <p>Create payment URLs and track transaction status.</p>
-          </article>
-
-          <article>
-            <h3>Payment Simulator</h3>
-            <p>Manually simulate success, failed, pending, or expired.</p>
-          </article>
-
-          <article>
-            <h3>Webhook Logs</h3>
-            <p>Inspect callback URL, response status, attempt, and retry.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="container splitSection">
-        <div>
-          <span className="sectionKicker">Integration flow</span>
-          <h2>Designed for Discord bots, e-commerce, and checkout testing.</h2>
+      <section className="featureSection">
+        <div className="sectionHead">
+          <span>Core flow</span>
+          <h2>Yang bisa dites.</h2>
           <p>
-            Use SandboxPay ID as a fake payment provider while building your
-            own order system. Your app creates a transaction, user opens the
-            payment URL, then your backend receives webhook callback.
+            Fitur dibuat secukupnya untuk ngetes flow payment dari aplikasi
+            sendiri.
           </p>
         </div>
 
-        <div className="flowList">
+        <div className="featureRows">
           <div>
-            <strong>01</strong>
-            <span>Create transaction from your app.</span>
+            <strong>API Key</strong>
+            <p>Generate secret key untuk request dari backend kamu.</p>
           </div>
 
           <div>
-            <strong>02</strong>
-            <span>Redirect user to payment simulator.</span>
+            <strong>Transaction API</strong>
+            <p>Buat transaksi sandbox dan dapatkan payment URL.</p>
           </div>
 
           <div>
-            <strong>03</strong>
-            <span>Simulate payment status.</span>
+            <strong>Payment Simulator</strong>
+            <p>Simulasikan success, failed, pending, cancelled, atau expired.</p>
           </div>
 
           <div>
-            <strong>04</strong>
-            <span>Receive webhook and update order.</span>
+            <strong>Webhook Logs</strong>
+            <p>Lihat response callback, attempt, dan status delivery.</p>
           </div>
         </div>
       </section>
 
-      <section className="container codeSection">
-        <div className="codeText">
-          <span className="sectionKicker">Example</span>
-          <h2>One request to create a sandbox transaction.</h2>
+      <section className="splitInfo">
+        <div>
+          <span className="kicker">Integration</span>
+          <h2>Dari order sampai webhook.</h2>
           <p>
-            Use this from your backend, Discord bot API server, or e-commerce
-            checkout service.
+            Aplikasi kamu create transaction, user buka payment URL, lalu
+            SandboxPay ID kirim webhook ke callback URL milik kamu.
+          </p>
+        </div>
+
+        <div className="flowStack">
+          <div>
+            <span>01</span>
+            <p>Backend kamu membuat transaksi.</p>
+          </div>
+
+          <div>
+            <span>02</span>
+            <p>User membuka payment simulator.</p>
+          </div>
+
+          <div>
+            <span>03</span>
+            <p>Status pembayaran disimulasikan.</p>
+          </div>
+
+          <div>
+            <span>04</span>
+            <p>Webhook dikirim ke callback URL.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="codeSection">
+        <div className="sectionHead">
+          <span>Example</span>
+          <h2>Request sederhana.</h2>
+          <p>
+            Pakai dari backend, API server bot Discord, atau service checkout
+            e-commerce.
           </p>
         </div>
 
@@ -331,17 +358,17 @@ function Landing() {
 
       <FAQ />
 
-      <section className="container finalCta">
+      <section className="finalCta">
         <div>
-          <h2>Build the payment flow first. Connect real payment later.</h2>
+          <h2>Bangun flow-nya dulu. Payment asli belakangan.</h2>
           <p>
-            SandboxPay ID is for development, testing, and learning. For real
-            payments, replace it with a licensed payment gateway.
+            SandboxPay ID membantu kamu memahami alur integrasi sebelum pindah
+            ke payment gateway resmi.
           </p>
         </div>
 
         <Link to="/register" className="button primary">
-          Create Developer Account
+          Buat Akun Developer
         </Link>
       </section>
     </main>
@@ -369,7 +396,7 @@ function Register({ refreshUser }) {
     }
 
     setLoading(true);
-    setMessage("Membuat akun developer...");
+    setMessage("Membuat akun...");
 
     try {
       const data = await apiRequest("/api/auth/register", {
@@ -379,7 +406,6 @@ function Register({ refreshUser }) {
 
       setToken(data.data.token);
       await refreshUser();
-
       navigate("/dashboard");
     } catch (error) {
       setMessage(error.message || "Register gagal.");
@@ -392,14 +418,12 @@ function Register({ refreshUser }) {
     <main className="authPage">
       <form className="authCard" onSubmit={submit}>
         <p className="eyebrow">Create Account</p>
-        <h1>Register Developer</h1>
-        <p>
-          Buat akun untuk mengelola API key dan mencoba payment gateway sandbox.
-        </p>
+        <h1>Register</h1>
+        <p>Buat akun untuk generate API key dan mencoba transaksi sandbox.</p>
 
         <label>Nama</label>
         <input
-          placeholder="Contoh: Andi Developer"
+          placeholder="Nama kamu"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -454,7 +478,7 @@ function Login({ refreshUser }) {
     }
 
     setLoading(true);
-    setMessage("Memproses login...");
+    setMessage("Login...");
 
     try {
       const data = await apiRequest("/api/auth/login", {
@@ -464,7 +488,6 @@ function Login({ refreshUser }) {
 
       setToken(data.data.token);
       await refreshUser();
-
       navigate("/dashboard");
     } catch (error) {
       setMessage(error.message || "Login gagal.");
@@ -477,8 +500,8 @@ function Login({ refreshUser }) {
     <main className="authPage">
       <form className="authCard" onSubmit={submit}>
         <p className="eyebrow">Welcome Back</p>
-        <h1>Login Developer</h1>
-        <p>Masuk untuk melihat API key, transaksi, dan webhook logs kamu.</p>
+        <h1>Login</h1>
+        <p>Masuk untuk melihat API key, transaksi, dan webhook logs.</p>
 
         <label>Email</label>
         <input
@@ -535,7 +558,6 @@ function Dashboard({ user, refreshUser }) {
 
       setSecretKey(data.data.secretKey);
       setSecretApiKey(data.data.secretKey);
-
       setMessage(data.message);
       loadKeys();
     } catch (error) {
@@ -544,9 +566,7 @@ function Dashboard({ user, refreshUser }) {
   }
 
   async function resetKey() {
-    if (!confirm("Yakin ingin reset API key? API key lama akan dinonaktifkan.")) {
-      return;
-    }
+    if (!confirm("Reset API key? Key lama akan dinonaktifkan.")) return;
 
     setMessage("Mereset API key...");
 
@@ -557,7 +577,6 @@ function Dashboard({ user, refreshUser }) {
 
       setSecretKey(data.data.secretKey);
       setSecretApiKey(data.data.secretKey);
-
       setMessage(data.message);
       loadKeys();
     } catch (error) {
@@ -579,19 +598,17 @@ function Dashboard({ user, refreshUser }) {
     loadKeys();
   }, []);
 
-  if (!getToken()) {
-    return <Navigate to="/login" />;
-  }
+  if (!getToken()) return <Navigate to="/login" />;
 
   return (
-    <main className="container pageContainer">
+    <main className="pageContainer">
       <section className="pageHeader">
         <div>
-          <p className="eyebrow">Developer Dashboard</p>
+          <p className="eyebrow">Workspace</p>
           <h1>Halo, {user?.name || "Developer"}</h1>
           <p>
-            Kelola API key, buat transaksi sandbox, dan cek webhook delivery
-            dari satu dashboard.
+            Pantau API key, transaksi, dan callback webhook tanpa
+            pindah-pindah tool.
           </p>
         </div>
 
@@ -617,13 +634,13 @@ function Dashboard({ user, refreshUser }) {
           <strong>{apiKeys.filter((item) => item.isActive).length}</strong>
         </div>
 
-        <div className="statCard">
+        <div className="statCard wide">
           <span>API Base URL</span>
           <code>{API_BASE_URL}</code>
         </div>
       </section>
 
-      <section className="gridTwo">
+      <section className="dashboardGrid">
         <div className="panel">
           <h2>Profile</h2>
 
@@ -644,19 +661,20 @@ function Dashboard({ user, refreshUser }) {
         </div>
 
         <div className="panel">
-          <h2>API Key Management</h2>
+          <h2>API Key</h2>
           <p>
-            Secret API key hanya tampil saat generate atau reset. Simpan key ini
-            karena dipakai sebagai Bearer Token untuk endpoint transaksi.
+            Secret key dipakai untuk request transaksi dari backend kamu.
+            Simpan baik-baik karena key lengkap hanya tampil saat dibuat atau
+            di-reset.
           </p>
 
           <div className="actions">
             <button onClick={generateKey} className="button primary">
-              Generate API Key
+              Generate Key
             </button>
 
             <button onClick={resetKey} className="button danger">
-              Reset API Key
+              Reset Key
             </button>
           </div>
 
@@ -682,7 +700,7 @@ function Dashboard({ user, refreshUser }) {
         <div className="sectionHeader">
           <div>
             <h2>API Key List</h2>
-            <p>Daftar API key yang pernah dibuat untuk akun ini.</p>
+            <p>Key yang aktif dan riwayat key yang pernah kamu buat.</p>
           </div>
 
           <button onClick={loadKeys} className="button ghost small">
@@ -693,7 +711,7 @@ function Dashboard({ user, refreshUser }) {
         {apiKeys.length === 0 ? (
           <div className="emptyState">
             <h3>Belum ada API key</h3>
-            <p>Generate API key pertama kamu untuk mulai membuat transaksi.</p>
+            <p>Generate API key pertama untuk mulai membuat transaksi.</p>
           </div>
         ) : (
           <div className="tableWrap">
@@ -786,9 +804,7 @@ function Transactions() {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw data;
-    }
+    if (!response.ok) throw data;
 
     return data;
   }
@@ -849,9 +865,7 @@ function Transactions() {
     try {
       const data = await transactionRequest(
         `/api/v1/transactions/${transactionId}/cancel`,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
 
       setMessage(data.message);
@@ -862,31 +876,25 @@ function Transactions() {
   }
 
   useEffect(() => {
-    if (apiKey) {
-      loadTransactions();
-    }
+    if (apiKey) loadTransactions();
   }, []);
 
   return (
-    <main className="container pageContainer">
+    <main className="pageContainer">
       <section className="pageHeader">
         <div>
-          <p className="eyebrow">Transaction Management</p>
-          <h1>Transactions</h1>
+          <p className="eyebrow">Transactions</p>
+          <h1>Buat transaksi sandbox.</h1>
           <p>
-            Buat transaksi sandbox, buka payment simulator, dan pantau status
-            transaksi.
+            Generate payment URL, buka simulator, lalu lihat status transaksi.
           </p>
         </div>
       </section>
 
-      <section className="gridTwo">
+      <section className="dashboardGrid">
         <div className="panel">
           <h2>Secret API Key</h2>
-          <p>
-            Gunakan secret API key dari dashboard. Key ini disimpan di browser
-            lokal kamu.
-          </p>
+          <p>Key ini dipakai sebagai Bearer Token untuk endpoint transaksi.</p>
 
           <label>Secret API Key</label>
           <input
@@ -897,7 +905,7 @@ function Transactions() {
 
           <div className="actions">
             <button onClick={saveApiKey} className="button primary">
-              Simpan API Key
+              Simpan Key
             </button>
 
             <button
@@ -1121,15 +1129,12 @@ function WebhookLogs() {
   }, []);
 
   return (
-    <main className="container pageContainer">
+    <main className="pageContainer">
       <section className="pageHeader">
         <div>
-          <p className="eyebrow">Webhook Monitoring</p>
-          <h1>Webhook Logs</h1>
-          <p>
-            Pantau callback yang dikirim ke endpoint developer, response status,
-            attempt, dan retry webhook.
-          </p>
+          <p className="eyebrow">Webhook Logs</p>
+          <h1>Callback delivery.</h1>
+          <p>Lihat status webhook yang dikirim ke endpoint developer.</p>
         </div>
 
         <button onClick={loadLogs} className="button ghost">
@@ -1210,10 +1215,7 @@ function WebhookLogs() {
 }
 
 function ProtectedRoute({ children }) {
-  if (!getToken()) {
-    return <Navigate to="/login" />;
-  }
-
+  if (!getToken()) return <Navigate to="/login" />;
   return children;
 }
 

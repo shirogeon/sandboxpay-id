@@ -109,8 +109,8 @@ function FAQ() {
 
   return (
     <section className="container faqSection">
-      <div className="faqIntro">
-        <span className="sectionTag">FAQ</span>
+      <div className="sectionTitle">
+        <span>FAQ</span>
         <h2>Pertanyaan yang sering muncul.</h2>
         <p>
           Beberapa hal penting sebelum memakai SandboxPay ID untuk testing
@@ -172,208 +172,176 @@ function Footer() {
 
 function Landing() {
   return (
-    <main>
-      <section className="publicHero">
-        <div className="container publicHeroGrid">
-          <div className="publicHeroText">
-            <div className="heroBrandLockup">
-              <img
-                src="/brand/sandboxpay-icon.png"
-                alt="SandboxPay ID icon"
-                className="heroBrandIcon"
-              />
+    <main className="marketingPage">
+      <section className="landingShell">
+        <div className="landingIntro">
+          <div className="brandStrip">
+            <img
+              src="/brand/sandboxpay-icon.png"
+              alt="SandboxPay ID icon"
+              className="brandStripIcon"
+            />
 
-              <div>
-                <strong>SandboxPay ID</strong>
-                <span>Payment sandbox for developers</span>
-              </div>
-            </div>
-
-            <div className="productBadge">Sandbox Payment Gateway API</div>
-
-            <h1>Mock payment gateway untuk latihan integrasi pembayaran.</h1>
-
-            <p>
-              SandboxPay ID membantu developer belajar membuat transaksi,
-              payment URL, API key, payment simulator, webhook callback, dan
-              webhook logs tanpa memproses uang asli.
-            </p>
-
-            <div className="publicActions">
-              <Link to="/register" className="button primary">
-                Mulai Testing
-              </Link>
-
-              <a
-                href={`${API_BASE_URL}/docs`}
-                target="_blank"
-                rel="noreferrer"
-                className="button ghost"
-              >
-                Buka Dokumentasi
-              </a>
-            </div>
-
-            <div className="publicMiniStats">
-              <div>
-                <strong>API Key</strong>
-                <span>Bearer token style</span>
-              </div>
-
-              <div>
-                <strong>Webhook</strong>
-                <span>Callback simulator</span>
-              </div>
-
-              <div>
-                <strong>No Real Money</strong>
-                <span>Aman untuk belajar</span>
-              </div>
+            <div>
+              <strong>SandboxPay ID</strong>
+              <span>Mock payment gateway API</span>
             </div>
           </div>
 
-          <div className="terminalPreview">
-            <div className="terminalTop">
-              <span></span>
-              <span></span>
-              <span></span>
-              <p>Create Transaction</p>
-            </div>
+          <h1>Payment sandbox for local testing.</h1>
 
-            <pre>{`POST /api/v1/transactions
+          <p className="leadText">
+            Create mock transactions, simulate payment status, and inspect
+            webhook delivery without touching real money.
+          </p>
 
-{
+          <div className="heroActions">
+            <Link to="/register" className="button primary">
+              Start Testing
+            </Link>
+
+            <a
+              href={`${API_BASE_URL}/docs`}
+              target="_blank"
+              rel="noreferrer"
+              className="button ghost"
+            >
+              Read Docs
+            </a>
+          </div>
+
+          <div className="plainMeta">
+            <span>No KYC</span>
+            <span>No real payment</span>
+            <span>Webhook ready</span>
+          </div>
+        </div>
+
+        <div className="apiConsole">
+          <div className="consoleHeader">
+            <span>POST</span>
+            <code>/api/v1/transactions</code>
+          </div>
+
+          <pre>{`{
   "order_id": "ORDER-001",
   "amount": 50000,
   "payment_method": "MOCK_EWALLET",
   "callback_url": "${API_BASE_URL}/webhook-test/receive"
 }`}</pre>
 
-            <div className="terminalResult">
-              <StatusBadge status="SUCCESS" />
-              <p>payment_url generated</p>
-            </div>
+          <div className="consoleFooter">
+            <span className="statusDot"></span>
+            <p>Payment URL generated. Waiting for simulation.</p>
           </div>
         </div>
       </section>
 
-      <section className="container publicSection">
-        <div className="publicSectionHeader">
-          <span>Kenapa SandboxPay ID?</span>
-          <h2>Dibuat untuk developer yang ingin belajar flow payment gateway.</h2>
+      <section className="container compactSection">
+        <div className="sectionTitle">
+          <span>What you can test</span>
+          <h2>Everything you need for payment flow practice.</h2>
+        </div>
+
+        <div className="simpleGrid">
+          <article>
+            <h3>API Key</h3>
+            <p>Generate sandbox keys and use them as Bearer token.</p>
+          </article>
+
+          <article>
+            <h3>Transactions</h3>
+            <p>Create payment URLs and track transaction status.</p>
+          </article>
+
+          <article>
+            <h3>Payment Simulator</h3>
+            <p>Manually simulate success, failed, pending, or expired.</p>
+          </article>
+
+          <article>
+            <h3>Webhook Logs</h3>
+            <p>Inspect callback URL, response status, attempt, and retry.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="container splitSection">
+        <div>
+          <span className="sectionKicker">Integration flow</span>
+          <h2>Designed for Discord bots, e-commerce, and checkout testing.</h2>
           <p>
-            Portal payment resmi biasanya butuh verifikasi bisnis. SandboxPay ID
-            memberi environment aman untuk memahami alur teknisnya dulu.
+            Use SandboxPay ID as a fake payment provider while building your
+            own order system. Your app creates a transaction, user opens the
+            payment URL, then your backend receives webhook callback.
           </p>
         </div>
 
-        <div className="publicFeatureGrid">
-          <div className="publicFeatureCard">
-            <div className="featureIcon">01</div>
-            <h3>Developer Account</h3>
-            <p>Register dan login untuk mengelola API key dan transaksi.</p>
-          </div>
-
-          <div className="publicFeatureCard">
-            <div className="featureIcon">02</div>
-            <h3>API Key Management</h3>
-            <p>Generate secret key untuk akses endpoint transaksi sandbox.</p>
-          </div>
-
-          <div className="publicFeatureCard">
-            <div className="featureIcon">03</div>
-            <h3>Payment Simulator</h3>
-            <p>Simulasikan pembayaran success, failed, pending, atau expired.</p>
-          </div>
-
-          <div className="publicFeatureCard">
-            <div className="featureIcon">04</div>
-            <h3>Webhook Logs</h3>
-            <p>Lihat callback URL, response status, attempt, dan retry log.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="container publicSection">
-        <div className="apiFlowCard">
+        <div className="flowList">
           <div>
-            <span className="sectionTag">Integration Flow</span>
-            <h2>Flow testing yang mirip payment gateway asli.</h2>
+            <strong>01</strong>
+            <span>Create transaction from your app.</span>
           </div>
 
-          <div className="apiFlowSteps">
-            <div>
-              <strong>1</strong>
-              <p>Developer generate API key dari dashboard.</p>
-            </div>
+          <div>
+            <strong>02</strong>
+            <span>Redirect user to payment simulator.</span>
+          </div>
 
-            <div>
-              <strong>2</strong>
-              <p>Client membuat transaksi lewat endpoint API.</p>
-            </div>
+          <div>
+            <strong>03</strong>
+            <span>Simulate payment status.</span>
+          </div>
 
-            <div>
-              <strong>3</strong>
-              <p>User membuka payment simulator dari payment URL.</p>
-            </div>
-
-            <div>
-              <strong>4</strong>
-              <p>Sistem mengirim webhook ke callback URL developer.</p>
-            </div>
+          <div>
+            <strong>04</strong>
+            <span>Receive webhook and update order.</span>
           </div>
         </div>
       </section>
 
-      <section className="container publicSection">
-        <div className="endpointShowcase">
-          <div className="endpointText">
-            <span className="sectionTag">API Preview</span>
-            <h2>Endpoint yang siap dicoba dari dokumentasi.</h2>
-            <p>
-              Gunakan dashboard untuk generate API key, lalu pakai endpoint ini
-              dari aplikasi, Postman, atau terminal.
-            </p>
-          </div>
+      <section className="container codeSection">
+        <div className="codeText">
+          <span className="sectionKicker">Example</span>
+          <h2>One request to create a sandbox transaction.</h2>
+          <p>
+            Use this from your backend, Discord bot API server, or e-commerce
+            checkout service.
+          </p>
+        </div>
 
-          <div className="endpointList">
-            <div>
-              <span>POST</span>
-              <code>/api/auth/register</code>
-            </div>
-
-            <div>
-              <span>POST</span>
-              <code>/api/keys/generate</code>
-            </div>
-
-            <div>
-              <span>POST</span>
-              <code>/api/v1/transactions</code>
-            </div>
-
-            <div>
-              <span>GET</span>
-              <code>/api/webhook-logs</code>
-            </div>
-          </div>
+        <div className="codePanel">
+          <pre>{`await fetch("${API_BASE_URL}/api/v1/transactions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_SECRET_API_KEY"
+  },
+  body: JSON.stringify({
+    order_id: "ORDER-001",
+    amount: 50000,
+    customer_name: "Customer",
+    customer_email: "customer@email.com",
+    payment_method: "MOCK_EWALLET",
+    callback_url: "https://your-app.com/webhook/payment"
+  })
+});`}</pre>
         </div>
       </section>
 
       <FAQ />
 
-      <section className="container publicCta">
+      <section className="container finalCta">
         <div>
-          <span className="sectionTag">Ready</span>
-          <h2>Mulai buat transaksi sandbox pertama kamu.</h2>
+          <h2>Build the payment flow first. Connect real payment later.</h2>
           <p>
-            Cocok untuk latihan backend, frontend integration, webhook handling,
-            dan portfolio fullstack.
+            SandboxPay ID is for development, testing, and learning. For real
+            payments, replace it with a licensed payment gateway.
           </p>
         </div>
 
         <Link to="/register" className="button primary">
-          Buat Akun Developer
+          Create Developer Account
         </Link>
       </section>
     </main>
